@@ -74,7 +74,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="888"
-                    android:id="@+id/textView3"
+                    android:id="@+id/tvLRSet1"
                     android:layout_gravity="center" />
             </LinearLayout>
 
@@ -89,7 +89,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="888"
-                    android:id="@+id/textView5"
+                    android:id="@+id/tvLRSet2"
                     android:layout_gravity="center" />
             </LinearLayout>
 
@@ -104,7 +104,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="888"
-                    android:id="@+id/textView7"
+                    android:id="@+id/tvLRSet3"
                     android:layout_gravity="center" />
             </LinearLayout>
 
@@ -119,7 +119,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="888"
-                    android:id="@+id/textView9"
+                    android:id="@+id/tvLRSet4"
                     android:layout_gravity="center" />
             </LinearLayout>
         </TableRow>
@@ -146,7 +146,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="888"
-                    android:id="@+id/textView10"
+                    android:id="@+id/tvBRSet1"
                     android:layout_gravity="center" />
             </LinearLayout>
 
@@ -161,7 +161,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="888"
-                    android:id="@+id/textView12"
+                    android:id="@+id/tvBRSet2"
                     android:layout_gravity="center" />
             </LinearLayout>
 
@@ -176,7 +176,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="888"
-                    android:id="@+id/textView14"
+                    android:id="@+id/tvBRSet3"
                     android:layout_gravity="center" />
             </LinearLayout>
 
@@ -191,7 +191,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="888"
-                    android:id="@+id/textView16"
+                    android:id="@+id/tvBRSet4"
                     android:layout_gravity="center" />
             </LinearLayout>
         </TableRow>
@@ -317,7 +317,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:text="Complete Training"
-                android:id="@+id/button2"
+                android:id="@+id/btnCompleteTraining"
                 android:layout_span="5" />
         </TableRow>
     </TableLayout>
@@ -335,18 +335,19 @@
             android:layout_height="86dp"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="888"
-            android:id="@+id/textView17"
+            android:id="@+id/tvPushCounter"
             android:layout_gravity="center_horizontal"
             android:gravity="center_vertical"
             android:textSize="80dp"
             android:textStyle="bold"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="88:88"
-            android:id="@+id/textView18"
+            android:id="@+id/tvTimer"
             android:layout_gravity="center_horizontal"
             android:textSize="40dp"
             android:textColor="#ff333333" />
