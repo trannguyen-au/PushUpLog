@@ -1,18 +1,12 @@
-package mobile.wnext.pushupslog.activities;
+package mobile.wnext.pushupsdiary.activities;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import java.lang.reflect.Field;
-
-import mobile.wnext.pushupslog.R;
-import mobile.wnext.pushupslog.viewmodels.TrainingViewModel;
+import mobile.wnext.pushupsdiary.R;
+import mobile.wnext.pushupsdiary.viewmodels.TrainingViewModel;
 
 public class TrainingActivity extends ActionBarActivity {
 
@@ -23,6 +17,24 @@ public class TrainingActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_training);
         viewModel = new TrainingViewModel(this);
+    }
+
+    @Override
+    public void onResume(){
+        viewModel.resume();
+        super.onResume();
+    }
+
+    @Override
+    public void onPause(){
+        viewModel.pause();
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy(){
+        viewModel.stopAndDestroy();
+        super.onDestroy();
     }
 
     @Override

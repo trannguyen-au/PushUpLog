@@ -1,4 +1,4 @@
-package mobile.wnext.pushupslog.activities;
+package mobile.wnext.pushupsdiary.activities;
 
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
@@ -8,7 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import mobile.wnext.pushupslog.R;
+import mobile.wnext.pushupsdiary.R;
 
 
 public class StartActivity extends ActionBarActivity implements View.OnClickListener {

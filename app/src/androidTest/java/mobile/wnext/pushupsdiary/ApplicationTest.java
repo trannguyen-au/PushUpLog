@@ -1,4 +1,4 @@
-package mobile.wnext.pushupslog;
+package mobile.wnext.pushupsdiary;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
