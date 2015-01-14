@@ -14,20 +14,20 @@ import java.sql.SQLException;
 /**
  * Created by Nnguyen on 12/01/2015.
  */
-public class TrainingLogHelper extends TableHelper {
+public class TrainingSetHelper extends TableHelper {
 
     // the DAO object we use to access the SimpleData table
-    private Dao<TrainingLog, Integer> simpleDao = null;
-    private RuntimeExceptionDao<TrainingLog, Integer> simpleRuntimeDao = null;
+    private Dao<TrainingSet, Integer> simpleDao = null;
+    private RuntimeExceptionDao<TrainingSet, Integer> simpleRuntimeDao = null;
 
     private OrmLiteSqliteOpenHelper dbHelper;
 
-    public static TrainingLogHelper getInstance(OrmLiteSqliteOpenHelper dbHelper) {
-        if(singleton == null) singleton = new TrainingLogHelper(dbHelper);
+    public static TrainingSetHelper getInstance(OrmLiteSqliteOpenHelper dbHelper) {
+        if(singleton == null) singleton = new TrainingSetHelper(dbHelper);
         return singleton;
     }
-    private static TrainingLogHelper singleton;
-    private TrainingLogHelper(OrmLiteSqliteOpenHelper dbHelper) {
+    private static TrainingSetHelper singleton;
+    private TrainingSetHelper(OrmLiteSqliteOpenHelper dbHelper) {
         this.dbHelper = dbHelper;
     }
 
@@ -35,7 +35,7 @@ public class TrainingLogHelper extends TableHelper {
     public void onCreate(SQLiteDatabase db, ConnectionSource connectionSource) {
         try {
             Log.i(this.getClass().getName(), "onCreate");
-            TableUtils.createTable(connectionSource, TrainingLog.class);
+            TableUtils.createTable(connectionSource, TrainingSet.class);
         } catch (SQLException e) {
             Log.e(this.getClass().getName(), "Can't create database", e);
             throw new RuntimeException(e);
@@ -45,8 +45,8 @@ public class TrainingLogHelper extends TableHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, ConnectionSource connectionSource, int oldVersion, int newVersion) {
         try {
-            Log.i(TrainingLogHelper.class.getName(), "onUpgrade");
-            TableUtils.dropTable(connectionSource, TrainingLog.class, true);
+            Log.i(this.getClass().getName(), "onUpgrade");
+            TableUtils.dropTable(connectionSource, TrainingSet.class, true);
             // after we drop the old databases, we create the new ones
             onCreate(db, connectionSource);
         } catch (SQLException e) {

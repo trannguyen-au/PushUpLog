@@ -18,7 +18,6 @@ import com.j256.ormlite.table.TableUtils;
  */
 public class PracticeLogHelper extends TableHelper {
 
-
     // the DAO object we use to access the SimpleData table
     private Dao<PracticeLog, Integer> simpleDao = null;
     private RuntimeExceptionDao<PracticeLog, Integer> simpleRuntimeDao = null;

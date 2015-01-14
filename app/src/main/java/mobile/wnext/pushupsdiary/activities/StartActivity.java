@@ -66,7 +66,8 @@ public class StartActivity extends ActionBarActivity implements View.OnClickList
 
         }
         else if(view == btnLog) {
-
+            Intent summaryIntent = new Intent(getApplicationContext(), SummaryActivity.class);
+            startActivity(summaryIntent);
         }
     }
 }

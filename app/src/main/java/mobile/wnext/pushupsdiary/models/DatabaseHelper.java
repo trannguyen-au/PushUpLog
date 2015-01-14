@@ -23,10 +23,24 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
         PracticeLogHelper.getInstance(this).onCreate(database,connectionSource);
+        TrainingLogHelper.getInstance(this).onCreate(database,connectionSource);
+        TrainingSetHelper.getInstance(this).onCreate(database,connectionSource);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion, int newVersion) {
         PracticeLogHelper.getInstance(this).onUpgrade(database,connectionSource,oldVersion,newVersion);
+        TrainingLogHelper.getInstance(this).onUpgrade(database,connectionSource,oldVersion,newVersion);
+        TrainingSetHelper.getInstance(this).onUpgrade(database,connectionSource,oldVersion,newVersion);
+    }
+
+    public PracticeLogHelper getPracticeLogHelper() {
+        return PracticeLogHelper.getInstance(this);
+    }
+    public TrainingLogHelper getTrainingLogHelper() {
+        return TrainingLogHelper.getInstance(this);
+    }
+    public TrainingSetHelper getTrainingSetHelper() {
+        return TrainingSetHelper.getInstance(this);
     }
 }
