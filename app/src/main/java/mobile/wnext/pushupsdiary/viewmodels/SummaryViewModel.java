@@ -14,22 +14,19 @@ import mobile.wnext.pushupsdiary.R;
 /**
  * Created by Nnguyen on 13/01/2015.
  */
-public class SummaryViewModel {
-
-    // context reference
-    Activity context;
+public class SummaryViewModel extends ViewModel {
 
     // view properties
     LineChart chart;
 
     public SummaryViewModel(Activity context) {
-        this.context = context;
+        super(context);
         initializeUI();
         loadDataForChart();
     }
 
     private void initializeUI() {
-        chart = (LineChart) context.findViewById(R.id.chart);
+        chart = (LineChart) activity.findViewById(R.id.chart);
     }
 
     public void loadDataForChart() {

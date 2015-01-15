@@ -5,8 +5,8 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_gravity="top"
-        android:src="@drawable/dark_background"
-        android:scaleType="matrix" />
+        android:scaleType="matrix"
+        android:src="@drawable/dark_background" />
 
     <TableLayout
         android:layout_width="fill_parent"

@@ -54,4 +54,35 @@ public class TrainingSetHelper extends TableHelper {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * Returns the Database Access Object (DAO) for our SimpleData class. It will create it or just give the cached
+     * value.
+     */
+    public Dao<TrainingSet, Integer> getDao() throws SQLException {
+        if (simpleDao == null) {
+            simpleDao = dbHelper.getDao(TrainingSet.class);
+        }
+        return simpleDao;
+    }
+
+    /**
+     * Returns the RuntimeExceptionDao (Database Access Object) version of a Dao for our SimpleData class. It will
+     * create it or just give the cached value. RuntimeExceptionDao only through RuntimeExceptions.
+     */
+    public RuntimeExceptionDao<TrainingSet, Integer> getSimpleDataDao() {
+        if (simpleRuntimeDao == null) {
+            simpleRuntimeDao = dbHelper.getRuntimeExceptionDao(TrainingSet.class);
+        }
+        return simpleRuntimeDao;
+    }
+
+    /**
+     * Close the database connections and clear any cached DAOs.
+     */
+
+    public void close() {
+        simpleDao = null;
+        simpleRuntimeDao = null;
+    }
 }

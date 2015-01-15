@@ -3,6 +3,7 @@ package mobile.wnext.pushupsdiary.models;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,5 +26,37 @@ public class PracticeLog {
         //ConnectionSource connectionSource = new AndroidConnectionSource()
         return null;
         //OpenHelperManager
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Date getLogDate() {
+        return logDate;
+    }
+
+    public void setLogDate(Date logDate) {
+        this.logDate = logDate;
+    }
+
+    public int getCountPushUps() {
+        return countPushUps;
+    }
+
+    public void setCountPushUps(int countPushUps) {
+        this.countPushUps = countPushUps;
+    }
+
+    public int getCountTime() {
+        return countTime;
+    }
+
+    public void setCountTime(int countTime) {
+        this.countTime = countTime;
     }
 }

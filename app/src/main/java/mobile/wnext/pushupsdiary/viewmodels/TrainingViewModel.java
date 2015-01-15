@@ -18,11 +18,12 @@ import java.util.Date;
 
 import mobile.wnext.pushupsdiary.Constants;
 import mobile.wnext.pushupsdiary.R;
+import mobile.wnext.pushupsdiary.Utils;
 
 /**
  * Created by Wery7 on 7/1/2015.
  */
-public class TrainingViewModel
+public class TrainingViewModel extends ViewModel
         implements View.OnClickListener, SensorEventListener
 {
     // constants
@@ -31,7 +32,6 @@ public class TrainingViewModel
     private static final int PROXIMITY_MAX_NEAR_DISTANCE = 3;
 
     // reference variables
-    Activity activity;
     Sensor proximitySensor;
     SensorManager sensorManager;
 
@@ -54,10 +54,10 @@ public class TrainingViewModel
     long seconds,ticks,minutes;
     int currentSetIndex;
 
-    public TrainingViewModel(Activity activity) {
+    public TrainingViewModel(Activity context) {
+        super(context);
         currentCount = 0;
-        this.activity = activity;
-        initializeUI(activity);
+        initializeUI();
         initializeSensor();
     }
 
@@ -81,7 +81,7 @@ public class TrainingViewModel
         proximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
     }
 
-    private void initializeUI(Activity activity) {
+    private void initializeUI() {
         mainButtonLayout = (LinearLayout)activity.findViewById(R.id.mainButtonLayout);
         mainButtonLayout.setOnClickListener(this);
 
@@ -195,18 +195,8 @@ public class TrainingViewModel
         }
     }
 
-    private String getDisplayTime(long currentTime) {
-        seconds = currentTime / 1000;
-        ticks = currentTime % 1000;
-        minutes = seconds / 60;
-        seconds = seconds % 60;
-        return String.format("%02d", minutes)+":"+
-                String.format("%02d",seconds)+":"+
-                String.format("%03d",ticks);
-    }
-
     private String getDisplayTimeShort(long currentTime) {
-        return getDisplayTime(currentTime).substring(0,5);
+        return Utils.getDisplayTime(currentTime).substring(0,5);
     }
 
     private void countOne() {
@@ -215,11 +205,11 @@ public class TrainingViewModel
                 // start timer
                 // TODO: find another mean to calculate exec
                 startTime = new Date();
-                timer = new CountDownTimer(999999, 50) {
+                timer = new CountDownTimer(999999, 25) {
                     @Override
                     public void onTick(long l) {
                         currentTime = (new Date()).getTime() - startTime.getTime();
-                        tvTimer.setText(getDisplayTime(currentTime));
+                        tvTimer.setText(Utils.getDisplayTime(currentTime));
                     }
 
                     @Override
