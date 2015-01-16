@@ -6,6 +6,7 @@ import android.util.Log;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
+import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
@@ -53,5 +54,52 @@ public class TrainingLogHelper extends TableHelper {
             Log.e(this.getClass().getName(), "Can't drop databases", e);
             throw new RuntimeException(e);
         }
+    }
+
+    public TrainingLog findBestRecord() throws SQLException{
+        Dao<TrainingLog, Integer> dao = getDao();
+        QueryBuilder<TrainingLog, Integer> queryBuilder = dao.queryBuilder();
+        queryBuilder.orderBy(TrainingLog.COL_TOTAL_COUNT, false);
+        queryBuilder.limit(1L);
+        return queryBuilder.queryForFirst();
+    }
+
+    public TrainingLog findLastRecord() throws SQLException {
+        Dao<TrainingLog, Integer> dao = getDao();
+        QueryBuilder<TrainingLog, Integer> queryBuilder = dao.queryBuilder();
+        queryBuilder.orderBy(TrainingLog.COL_DATE_TIME_START, false);
+        queryBuilder.limit(1L);
+        return queryBuilder.queryForFirst();
+    }
+
+    /**
+     * Returns the Database Access Object (DAO) for our SimpleData class. It will create it or just give the cached
+     * value.
+     */
+    public Dao<TrainingLog, Integer> getDao() throws SQLException {
+        if (simpleDao == null) {
+            simpleDao = dbHelper.getDao(TrainingLog.class);
+        }
+        return simpleDao;
+    }
+
+    /**
+     * Returns the RuntimeExceptionDao (Database Access Object) version of a Dao for our SimpleData class. It will
+     * create it or just give the cached value. RuntimeExceptionDao only through RuntimeExceptions.
+     */
+    public RuntimeExceptionDao<TrainingLog, Integer> getSimpleDataDao() {
+        if (simpleRuntimeDao == null) {
+            simpleRuntimeDao = dbHelper.getRuntimeExceptionDao(TrainingLog.class);
+        }
+        return simpleRuntimeDao;
+    }
+
+    /**
+     * Close the database connections and clear any cached DAOs.
+     */
+
+    public void close() {
+        simpleDao = null;
+        simpleRuntimeDao = null;
     }
 }

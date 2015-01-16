@@ -6,10 +6,13 @@ import android.util.Log;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
+import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Nnguyen on 12/01/2015.
@@ -53,6 +56,12 @@ public class TrainingSetHelper extends TableHelper {
             Log.e(this.getClass().getName(), "Can't drop databases", e);
             throw new RuntimeException(e);
         }
+    }
+
+    public List<TrainingSet> findTrainingSetForLog(int trainingLogId)throws SQLException  {
+        Dao<TrainingSet, Integer> dao = getDao();
+        List<TrainingSet> results =  dao.queryForEq("training_log_id",trainingLogId);
+        return results;
     }
 
     /**

@@ -37,16 +37,8 @@ public class TrainingSet {
         return trainingLog;
     }
 
-    public void setTrainingLog(TrainingLog trainingLog) {
-        this.trainingLog = trainingLog;
-    }
-
     public int getSequence() {
         return sequence;
-    }
-
-    public void setSequence(int sequence) {
-        this.sequence = sequence;
     }
 
     public int getCount() {
@@ -80,4 +72,48 @@ public class TrainingSet {
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
     }
+
+    public static class Builder {
+        private final TrainingLog mTrainingLog;
+        private final int mSequence;
+
+
+        private Date mStartDate = new Date();
+        private Date mEndDate = new Date();
+        private int mCount = 0;
+        private int mTime = 0;
+        public Builder(TrainingLog trainingLog, int sequence) {
+            mTrainingLog = trainingLog;
+            mSequence = sequence;
+        }
+        public Builder startDate(Date val) {
+            mStartDate = val;
+            return this;
+        }
+        public Builder endDate(Date val) {
+            mEndDate = val;
+            return this;
+        }
+        public Builder count(int val) {
+            mCount = val;
+            return this;
+        }
+        public Builder time(int val) {
+            mTime = val;
+            return this;
+        }
+        public TrainingSet build() {
+            return new TrainingSet(this);
+        }
+    }
+
+    private TrainingSet(Builder builder) {
+        startDate = builder.mStartDate;
+        endDate = builder.mEndDate;
+        count = builder.mCount;
+        time = builder.mTime;
+        trainingLog = builder.mTrainingLog;
+        sequence = builder.mSequence;
+    }
+    public TrainingSet() {}
 }

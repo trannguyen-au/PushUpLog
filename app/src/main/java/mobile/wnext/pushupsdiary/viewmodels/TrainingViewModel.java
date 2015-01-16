@@ -14,11 +14,20 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.QueryBuilder;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import mobile.wnext.pushupsdiary.Constants;
 import mobile.wnext.pushupsdiary.R;
 import mobile.wnext.pushupsdiary.Utils;
+import mobile.wnext.pushupsdiary.activities.SummaryActivity;
+import mobile.wnext.pushupsdiary.models.TrainingLog;
+import mobile.wnext.pushupsdiary.models.TrainingSet;
 
 /**
  * Created by Wery7 on 7/1/2015.
@@ -37,6 +46,7 @@ public class TrainingViewModel extends ViewModel
 
     // properties
     private boolean coolingDown = false;
+    private boolean isCompleted = false;
 
     // view variables
     LinearLayout mainButtonLayout;
@@ -51,14 +61,27 @@ public class TrainingViewModel extends ViewModel
     Date startTime;
     int currentCount;
     long currentTime;
-    long seconds,ticks,minutes;
     int currentSetIndex;
+
+    // model database
+    TrainingLog mTrainingLog;
+    ArrayList<TrainingSet> mTrainingSets;
+    TrainingSet mCurrentTrainingSet;
 
     public TrainingViewModel(Activity context) {
         super(context);
         currentCount = 0;
         initializeUI();
         initializeSensor();
+
+        loadLastRecordValues();
+        loadBestRecordValues();
+
+        // create the data model
+        mTrainingLog = new TrainingLog.Builder()
+                .count(0)
+                .time(0)
+                .build();
     }
 
     public void pause(){
@@ -109,15 +132,43 @@ public class TrainingViewModel extends ViewModel
         btnCompleteTraining.setOnClickListener(this);
 
         resetAllCounterValues();
-        loadLastRecordValues();
-        loadBestRecordValues();
     }
 
     private void loadBestRecordValues() {
+        // reset all values
         tvBRSet1.setText("0");
         tvBRSet2.setText("0");
         tvBRSet3.setText("0");
         tvBRSet4.setText("0");
+
+        // get the data from sqlite database
+        try {
+            TrainingLog bestLogRecord = application.getDbHelper().getTrainingLogHelper().findBestRecord();
+            if(bestLogRecord!=null) {
+                // find all the sets
+                int count = 0;
+                for (TrainingSet data : bestLogRecord.getTrainingSets()) { // using foreign collection reference
+                    switch (count) {
+                        case 0:
+                            tvBRSet1.setText(String.valueOf(data.getCount()));
+                            break;
+                        case 1:
+                            tvBRSet2.setText(String.valueOf(data.getCount()));
+                            break;
+                        case 2:
+                            tvBRSet3.setText(String.valueOf(data.getCount()));
+                            break;
+                        case 3:
+                            tvBRSet4.setText(String.valueOf(data.getCount()));
+                            break;
+                    }
+                    count++;
+                }
+            }
+        }
+        catch (SQLException sqle) {
+            Toast.makeText(activity, "Cannot access database for best record", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void loadLastRecordValues() {
@@ -125,6 +176,33 @@ public class TrainingViewModel extends ViewModel
         tvLRSet2.setText("0");
         tvLRSet3.setText("0");
         tvLRSet4.setText("0");
+        try {
+            TrainingLog bestLogRecord = application.getDbHelper().getTrainingLogHelper().findLastRecord();
+            if(bestLogRecord!=null) {
+                // find all the sets
+                int count = 0;
+                for (TrainingSet data : bestLogRecord.getTrainingSets()) { // using foreign collection reference
+                    switch (count) {
+                        case 0:
+                            tvLRSet1.setText(String.valueOf(data.getCount()));
+                            break;
+                        case 1:
+                            tvLRSet2.setText(String.valueOf(data.getCount()));
+                            break;
+                        case 2:
+                            tvLRSet3.setText(String.valueOf(data.getCount()));
+                            break;
+                        case 3:
+                            tvLRSet4.setText(String.valueOf(data.getCount()));
+                            break;
+                    }
+                    count++;
+                }
+            }
+        }
+        catch (SQLException sqle) {
+            Toast.makeText(activity, "Cannot access database for last record", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void resetCounterValues() {
@@ -160,10 +238,15 @@ public class TrainingViewModel extends ViewModel
         }
         else if(view == btnCompleteTraining) {
             // show result activity
+            startActivity(SummaryActivity.class);
         }
     }
 
     private void saveCurrentRecord() {
+        if(currentSetIndex>=0 && currentSetIndex < 4) {
+            logTrainingSet();
+        }
+
         switch (currentSetIndex) {
             case 0:
                 tvCurrentSet1.setText(String.valueOf(currentCount)+"/"+getDisplayTimeShort(currentTime));
@@ -180,10 +263,11 @@ public class TrainingViewModel extends ViewModel
             case 3:
                 tvCurrentSet4.setText(String.valueOf(currentCount)+"/"+getDisplayTimeShort(currentTime));
                 tvCurrentSet4.setTextColor(activity.getResources().getColor(R.color.label_value_recorded));
+                isCompleted = true;
                 break;
         }
 
-        if(currentSetIndex < 4) {
+        if(!isCompleted) {
             currentSetIndex++;
             Toast.makeText(activity,"Current set index is "+currentSetIndex, Toast.LENGTH_SHORT)
                     .show();
@@ -195,31 +279,63 @@ public class TrainingViewModel extends ViewModel
         }
     }
 
+    private void logTrainingSet() {
+        try {
+            mTrainingLog.setTotalCount(mTrainingLog.getTotalCount() + currentCount);
+            mTrainingLog.setTotalTime(mTrainingLog.getTotalTime() + (int) currentTime);
+            application.getDbHelper().getTrainingLogHelper().getDao().createOrUpdate(mTrainingLog);
+
+            mCurrentTrainingSet.setCount(currentCount);
+            mCurrentTrainingSet.setTime((int) currentTime);
+            mCurrentTrainingSet.setEndDate(new Date());
+            application.getDbHelper().getTrainingSetHelper().getDao().createOrUpdate(mCurrentTrainingSet);
+        }
+        catch (SQLException sqle) {
+
+        }
+    }
+
     private String getDisplayTimeShort(long currentTime) {
         return Utils.getDisplayTime(currentTime).substring(0,5);
     }
 
     private void countOne() {
         synchronized (countLock) {
+            if(isCompleted) {
+                Toast.makeText(activity,"This set is completed", Toast.LENGTH_SHORT)
+                        .show();
+                return;
+            }
             if (currentCount == 0) {
                 // start timer
-                // TODO: find another mean to calculate exec
+                // TODO: find another mean to calculate time
                 startTime = new Date();
+                if(currentSetIndex==0) {
+                    mTrainingLog.setDateTimeStart(startTime);
+                }
+                mCurrentTrainingSet = new TrainingSet.Builder(mTrainingLog, currentSetIndex)
+                        .count(0)
+                        .time(0)
+                        .startDate(startTime)
+                        .build();
                 timer = new CountDownTimer(999999, 25) {
                     @Override
                     public void onTick(long l) {
                         currentTime = (new Date()).getTime() - startTime.getTime();
+                        mCurrentTrainingSet.setTime(currentTime);
                         tvTimer.setText(Utils.getDisplayTime(currentTime));
                     }
 
                     @Override
                     public void onFinish() {
+                        saveCurrentRecord();
                         //Toast.makeText(activity,"Timer complete",Toast.LENGTH_SHORT).show();
                     }
                 }.start();
             }
             if (!coolingDown) {
                 currentCount++;
+                mCurrentTrainingSet.setCount(currentCount);
                 tvPushCounter.setText(String.valueOf(currentCount));
                 coolingDown = true;
 
