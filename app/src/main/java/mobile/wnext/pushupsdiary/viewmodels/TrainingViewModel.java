@@ -233,6 +233,9 @@ public class TrainingViewModel extends ViewModel
                 timer = null;
             }
 
+            // offer a popup to correct the number
+
+
             saveCurrentRecord();
             resetCounterValues();
         }

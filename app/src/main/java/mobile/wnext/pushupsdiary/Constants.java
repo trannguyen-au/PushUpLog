@@ -5,4 +5,5 @@ package mobile.wnext.pushupsdiary;
  */
 public class Constants {
     public static final String TAG = "PUSH_UPS_DIARY";
+    public static final String COUNT_PARAM = "COUNT";
 }
