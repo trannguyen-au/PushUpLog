@@ -1,9 +1,10 @@
 package mobile.wnext.pushupsdiary.viewmodels;
 
+import android.support.v7.app.ActionBar;
 import android.app.Activity;
-import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 
 import mobile.wnext.pushupsdiary.PushUpsDiaryApplication;
 
@@ -11,13 +12,19 @@ import mobile.wnext.pushupsdiary.PushUpsDiaryApplication;
  * Created by Nnguyen on 15/01/2015.
  */
 public abstract class ViewModel {
-    protected Activity activity;
     public static PushUpsDiaryApplication application;
+
+    protected Activity activity;
+    protected ActionBar mActionBar;
 
     public ViewModel(Activity activity) {
         this.activity = activity;
         if(application==null) {
             application = (PushUpsDiaryApplication) activity.getApplication();
+        }
+
+        if(activity.getClass() == ActionBarActivity.class) {
+            mActionBar = ((ActionBarActivity)activity).getSupportActionBar();
         }
     }
 
