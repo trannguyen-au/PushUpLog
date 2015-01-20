@@ -6,6 +6,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
@@ -26,6 +27,7 @@ import mobile.wnext.pushupsdiary.Constants;
 import mobile.wnext.pushupsdiary.R;
 import mobile.wnext.pushupsdiary.Utils;
 import mobile.wnext.pushupsdiary.activities.SummaryActivity;
+import mobile.wnext.pushupsdiary.activities.fragments.CorrectCountDialogFragment;
 import mobile.wnext.pushupsdiary.models.TrainingLog;
 import mobile.wnext.pushupsdiary.models.TrainingSet;
 
@@ -207,17 +209,17 @@ public class TrainingViewModel extends ViewModel
 
     private void resetCounterValues() {
         tvPushCounter.setText("0");
-        tvTimer.setText("00:00");
+        tvTimer.setText("00:00:000");
         currentCount = 0;
         currentTime = 0;
     }
 
     private void resetAllCounterValues() {
         resetCounterValues();
-        tvCurrentSet1.setText("0");
-        tvCurrentSet2.setText("0");
-        tvCurrentSet3.setText("0");
-        tvCurrentSet4.setText("0");
+        tvCurrentSet1.setText("0/00:00");
+        tvCurrentSet2.setText("0/00:00");
+        tvCurrentSet3.setText("0/00:00");
+        tvCurrentSet4.setText("0/00:00");
         currentSetIndex = 0;
     }
 
@@ -234,10 +236,29 @@ public class TrainingViewModel extends ViewModel
             }
 
             // offer a popup to correct the number
+            if(mCurrentTrainingSet!=null && currentTime!=0 && currentCount != 0) {
 
+                CorrectCountDialogFragment dialogFragment = new CorrectCountDialogFragment();
+                Bundle args = new Bundle();
+                args.putInt(Constants.COUNT_PARAM, currentCount);
+                dialogFragment.setArguments(args);
+                dialogFragment.setEventListener(new CorrectCountDialogFragment.CorrectCountDialogEventListener() {
+                    @Override
+                    public void changeCount(int newCount) {
+                        currentCount = newCount;
+                    }
 
-            saveCurrentRecord();
-            resetCounterValues();
+                    @Override
+                    public void dialogClosing() {
+                        saveCurrentRecord();
+                        resetCounterValues();
+                    }
+                });
+                dialogFragment.show(activity.getFragmentManager(),"CorrectCountDialog");
+            }
+            else {
+                Toast.makeText(activity,"Please start the training first.", Toast.LENGTH_SHORT).show();
+            }
         }
         else if(view == btnCompleteTraining) {
             // show result activity

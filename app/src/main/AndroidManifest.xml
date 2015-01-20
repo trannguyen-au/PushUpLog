@@ -29,6 +29,8 @@
             android:name=".activities.SummaryActivity"
             android:label="@string/title_activity_summary">
         </activity>
+
+        <activity android:name="mobile.wnext.utils.AndroidDatabaseManager"  />
     </application>
 
 </manifest>
