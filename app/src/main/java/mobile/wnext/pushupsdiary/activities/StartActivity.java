@@ -23,6 +23,12 @@ public class StartActivity extends ActionBarActivity {
         startViewModel = new StartViewModel(this);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        startViewModel.refreshData();
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

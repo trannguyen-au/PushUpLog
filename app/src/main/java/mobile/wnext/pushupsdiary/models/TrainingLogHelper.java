@@ -5,12 +5,18 @@ import android.util.Log;
 
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Nnguyen on 12/01/2015.
@@ -70,6 +76,41 @@ public class TrainingLogHelper extends TableHelper {
         queryBuilder.orderBy(TrainingLog.COL_DATE_TIME_START, false);
         queryBuilder.limit(1L);
         return queryBuilder.queryForFirst();
+    }
+
+    public List<TrainingLogChartSummary> findRecords(Date from, Date to) throws SQLException {
+        if(from.compareTo(to)!=-1)
+            throw new IllegalArgumentException("'From' date must be after 'To' date");
+
+        Dao<TrainingLog, Integer> dao = getDao();
+        SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-DD");
+
+        String rawQuery = "select substr(dateTimeStart,0,11)" +
+                ", sum(totalCount) as totalCount" +
+                ", sum(totalTime) as totalTime " +
+                " from traininglog " +
+                " where dateTimeStart < Datetime('"+ sdf.format(to)+" 00:00:00') " +
+                "   and dateTimeStart >= Datetime('"+sdf.format(from)+" 00:00:00' " +
+                " group by substr(dateTimeStart,0,11)";
+
+        GenericRawResults<String[]> rawResults = dao.queryRaw(rawQuery);
+
+        List<String[]> results = rawResults.getResults();
+        List<TrainingLogChartSummary> finalResult = new ArrayList<>();
+        for (int i=0;i<results.size();i++) {
+            String[] resultArray = results.get(i);
+
+            TrainingLogChartSummary chartSummary = new TrainingLogChartSummary();
+            try{
+                chartSummary.setDateTimeStart(sdf.parse(resultArray[0]));
+            } catch (Exception ex) {}
+
+            chartSummary.setTotalCount(Integer.valueOf(resultArray[1]));
+            chartSummary.setTotalTime(Integer.valueOf(resultArray[2]));
+            finalResult.add(chartSummary);
+        }
+
+        return finalResult;
     }
 
     /**

@@ -141,7 +141,8 @@
                 android:src="@drawable/logo_pushup"
                 android:padding="16dp"
                 android:layout_gravity="center"
-                android:scaleType="fitCenter"/>
+                android:scaleType="fitCenter"
+                android:id="@+id/ivLogo"/>
         </TableRow>
 
         <TableRow
