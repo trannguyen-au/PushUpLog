@@ -83,7 +83,7 @@ public class TrainingLogHelper extends TableHelper {
             throw new IllegalArgumentException("'From' date must be after 'To' date");
 
         Dao<TrainingLog, Integer> dao = getDao();
-        SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-DD");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
         String rawQuery = "select substr(dateTimeStart,0,11)" +
                 ", sum(totalCount) as totalCount" +

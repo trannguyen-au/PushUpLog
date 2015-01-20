@@ -21,6 +21,7 @@ import mobile.wnext.pushupsdiary.PushUpsDiaryApplication;
 import mobile.wnext.pushupsdiary.R;
 import mobile.wnext.pushupsdiary.models.TrainingLog;
 import mobile.wnext.pushupsdiary.models.TrainingLogChartSummary;
+import mobile.wnext.utils.DateUtils;
 
 /**
  * Created by Nnguyen on 16/01/2015.
@@ -30,7 +31,7 @@ public class WeeklySummaryViewModel {
     LineChart mChart;
     View mView;
     Activity mActivity;
-    List<TrainingLogChartSummary> weeklyData;
+    List<TrainingLogChartSummary> weeklyData = null;
     Date firstDayOfWeek,lastDayOfWeek;
 
     public WeeklySummaryViewModel(Activity activity, View view) {
@@ -92,18 +93,14 @@ public class WeeklySummaryViewModel {
     private LineDataSet loadPushUpsLineData() {
         ArrayList<Entry> yData = new ArrayList<>();
 
-        for (int i = 0 ; i <weeklyData.size();i++) {
-            TrainingLogChartSummary trainingLog = weeklyData.get(i);
-
-            // check for which date should this entry be placed on the x-axis
-            //Days trainingLog.getDateTimeStart()
-
-            Entry entry = new Entry(trainingLog.getTotalCount(),i);
-            yData.add(entry);
+        for (TrainingLogChartSummary trainingLog : weeklyData) {
+            yData.add(new Entry(trainingLog.getTotalCount(),
+                    DateUtils.DayDifferent(
+                            firstDayOfWeek,
+                            trainingLog.getDateTimeStart())));
         }
 
-        LineDataSet set1 = new LineDataSet(yData,"Push Ups");
-        return set1;
+        return new LineDataSet(yData,"Push Ups");
     }
 
     private LineDataSet loadPushUpsRateLineData() {
