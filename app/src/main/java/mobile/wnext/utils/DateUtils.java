@@ -2,6 +2,7 @@ package mobile.wnext.utils;
 
 import android.util.Log;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -11,21 +12,37 @@ import mobile.wnext.pushupsdiary.Constants;
  * Created by Nnguyen on 20/01/2015.
  */
 public class DateUtils {
+
+    private static final String TAG = "WN-Utilities";
+
     private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    public static int DayDifferent(Date from, Date to) {
-        from = dateOnly(from);
-        to = dateOnly(to);
-        long second = (to.getTime() - from.getTime())/1000;
-        return (int) (second / 86400);
+    public static int DayDifferent(Date from, Date to) throws ParseException {
+        try {
+            from = dateOnly(from);
+            to = dateOnly(to);
+            long second = (to.getTime() - from.getTime())/1000;
+            return (int) (second / 86400);
+        }
+        catch (ParseException ex) {
+            Log.e(TAG,"Can't strip time component from date "+sdf.format(from)+" and "+sdf.format(to));
+            throw ex;
+        }
     }
 
-    public static Date dateOnly(Date input) {
+    public static Date dateOnly(Date input) throws ParseException {
+        return sdf.parse(sdf.format(input));
+    }
+
+    public static Date parseDate(String string, String dateFormat)  {
         try {
-            return sdf.parse(sdf.format(input));
+            sdf.applyPattern(dateFormat);
+            return sdf.parse(string);
         }
-        catch (Exception ex) {
-            Log.e("WN-Utilities","Can't strip time component from date "+sdf.format(input));
+        catch (ParseException ex) {
+            Log.e(TAG,"parseDate: "+string+" format: "+dateFormat);
             return null;
         }
     }
+
+
 }
