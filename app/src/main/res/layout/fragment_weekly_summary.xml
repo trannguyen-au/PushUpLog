@@ -32,9 +32,21 @@
             android:layout_column="2"/>
     </TableRow>
     <TableRow>
-        <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/chart"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" android:layout_span="3" />
+            android:layout_height="match_parent" android:layout_span="3"
+            android:orientation="vertical">
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/chart"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/chartRate"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
     </TableRow>
 </TableLayout>

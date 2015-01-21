@@ -90,7 +90,7 @@ public class TrainingLogHelper extends TableHelper {
                 ", sum(totalTime) as totalTime " +
                 " from traininglog " +
                 " where dateTimeStart < Datetime('"+ sdf.format(to)+" 00:00:00') " +
-                "   and dateTimeStart >= Datetime('"+sdf.format(from)+" 00:00:00' " +
+                "   and dateTimeStart >= Datetime('"+sdf.format(from)+" 00:00:00') " +
                 " group by substr(dateTimeStart,0,11)";
 
         GenericRawResults<String[]> rawResults = dao.queryRaw(rawQuery);

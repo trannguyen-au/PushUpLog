@@ -29,6 +29,19 @@ public class DateUtils {
         }
     }
 
+    public static String format(Date date, String format) {
+        sdf.applyPattern(format);
+        return sdf.format(date);
+    }
+
+    public static String DMYFormat(Date date, String separator) {
+        return format(date, "dd"+separator+"MM"+separator+"yyyy");
+    }
+
+    public static String YMDFormat(Date date,String separator) {
+        return format(date, "yyyy"+separator+"MM"+separator+"dd");
+    }
+
     public static Date dateOnly(Date input) throws ParseException {
         return sdf.parse(sdf.format(input));
     }
