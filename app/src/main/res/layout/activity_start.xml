@@ -1,194 +1,196 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    tools:context=".StartActivity">
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_gravity="top"
         android:scaleType="matrix"
         android:src="@drawable/dark_background" />
-
-    <TableLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        tools:context=".StartActivity"
-        android:stretchColumns="0,1"
-        android:orientation="horizontal"
-        android:gravity="center_vertical|top">
-        <TableRow
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TableLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:layout_height="wrap_content"
+            android:layout_span="2"
+            android:stretchColumns="0,1,2,3"
+            android:id="@+id/tableLayout4">
 
-            <TableLayout
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="@drawable/summary_box_top"></TableRow>
+
+            <TableRow
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:layout_span="2"
-                android:stretchColumns="0,1,2,3">
+                android:background="@drawable/summary_box">
 
-                <TableRow
+                <LinearLayout
+                    android:orientation="vertical"
                     android:layout_width="fill_parent"
-                    android:layout_height="1dp"
-                    android:background="@drawable/summary_box_top"></TableRow>
+                    android:layout_height="fill_parent">
 
-                <TableRow
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="BEST"
+                        android:layout_gravity="center_horizontal"
+                        style="@style/SummaryLabel" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="999"
+                        android:id="@+id/tvBest"
+                        android:layout_gravity="center_horizontal"
+                        style="@style/SummaryFigure" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
                     android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:background="@drawable/summary_box">
+                    android:layout_height="fill_parent">
 
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="LAST"
+                        android:layout_gravity="center_horizontal"
+                        style="@style/SummaryLabel" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:text="BEST"
-                            android:layout_gravity="center_horizontal"
-                            style="@style/SummaryLabel" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="999"
+                        android:id="@+id/tvLast"
+                        android:layout_gravity="center_horizontal"
+                        style="@style/SummaryFigure" />
+                </LinearLayout>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="999"
-                            android:id="@+id/tvBest"
-                            android:layout_gravity="center_horizontal"
-                            style="@style/SummaryFigure" />
-                    </LinearLayout>
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
 
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="TOTAL"
+                        android:layout_gravity="center_horizontal"
+                        style="@style/SummaryLabel" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:text="LAST"
-                            android:layout_gravity="center_horizontal"
-                            style="@style/SummaryLabel" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="999"
+                        android:id="@+id/tvTotal"
+                        android:layout_gravity="center_horizontal"
+                        style="@style/SummaryFigure" />
+                </LinearLayout>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="999"
-                            android:id="@+id/tvLast"
-                            android:layout_gravity="center_horizontal"
-                            style="@style/SummaryFigure" />
-                    </LinearLayout>
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
 
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="TIME"
+                        android:layout_gravity="center_horizontal"
+                        style="@style/SummaryLabel" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:text="TOTAL"
-                            android:layout_gravity="center_horizontal"
-                            style="@style/SummaryLabel" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="999"
-                            android:id="@+id/tvTotal"
-                            android:layout_gravity="center_horizontal"
-                            style="@style/SummaryFigure" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:text="TIME"
-                            android:layout_gravity="center_horizontal"
-                            style="@style/SummaryLabel" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:text="00:00"
-                            android:id="@+id/tvTime"
-                            android:layout_gravity="center_horizontal"
-                            style="@style/SummaryFigure" />
-                    </LinearLayout>
-                </TableRow>
-            </TableLayout>
-        </TableRow>
-
-        <TableRow
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="00:00"
+                        android:id="@+id/tvTime"
+                        android:layout_gravity="center_horizontal"
+                        style="@style/SummaryFigure" />
+                </LinearLayout>
+            </TableRow>
+        </TableLayout>
+        <ImageView
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="300dp"
-                android:layout_span="2"
-                android:src="@drawable/logo_pushup"
-                android:padding="16dp"
-                android:layout_gravity="center"
-                android:scaleType="fitCenter"
-                android:id="@+id/ivLogo"/>
-        </TableRow>
-
-        <TableRow
+            android:layout_height="wrap_content"
+            android:layout_span="2"
+            android:padding="16dp"
+            android:layout_gravity="center"
+            android:scaleType="fitCenter"
+            android:id="@+id/ivLogo"
+            android:background="@drawable/ic_launcher"
+            android:layout_above="@+id/tableLayout3"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tableLayout4" />
+        <TableLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_gravity="bottom">
+            android:layout_height="wrap_content"
+            android:stretchColumns="0,1"
+            android:orientation="horizontal"
+            android:gravity="center_vertical|top"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentRight="true"
+            android:id="@+id/tableLayout3">
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="START TRAINING"
-                android:id="@+id/btnStartTraining"
-                android:layout_column="0"
-                android:layout_span="2"
-                style="@style/OrangeButton"
-                android:layout_marginBottom="5dp"
-                android:focusable="false" />
-        </TableRow>
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="bottom">
 
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_gravity="bottom">
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="START TRAINING"
+                    android:id="@+id/btnStartTraining"
+                    android:layout_column="0"
+                    android:layout_span="2"
+                    style="@style/OrangeButton"
+                    android:layout_marginBottom="5dp"
+                    android:focusable="false" />
+            </TableRow>
 
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="PRACTICE"
-                android:id="@+id/btnPractice"
-                android:layout_column="0"
-                android:layout_weight="1"
-                style="@style/OrangeButton"
-                android:layout_marginRight="2dp" />
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="bottom">
 
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="LOG"
-                android:id="@+id/btnLog"
-                android:layout_column="1"
-                android:layout_weight="1"
-                style="@style/OrangeButton"
-                android:layout_marginLeft="3dp" />
-        </TableRow>
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="PRACTICE"
+                    android:id="@+id/btnPractice"
+                    android:layout_column="0"
+                    android:layout_weight="1"
+                    style="@style/OrangeButton"
+                    android:layout_marginRight="2dp" />
 
-    </TableLayout>
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="LOG"
+                    android:id="@+id/btnLog"
+                    android:layout_column="1"
+                    android:layout_weight="1"
+                    style="@style/OrangeButton"
+                    android:layout_marginLeft="3dp" />
+            </TableRow>
+        </TableLayout>
+    </RelativeLayout>
+
 
 
 </FrameLayout>
