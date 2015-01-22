@@ -1,14 +1,20 @@
 package mobile.wnext.pushupsdiary.viewmodels;
 
 import android.app.Activity;
-import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.BarLineChartBase;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -23,33 +29,29 @@ import java.util.List;
 import mobile.wnext.pushupsdiary.Constants;
 import mobile.wnext.pushupsdiary.PushUpsDiaryApplication;
 import mobile.wnext.pushupsdiary.R;
-import mobile.wnext.pushupsdiary.models.TrainingLog;
 import mobile.wnext.pushupsdiary.models.TrainingLogChartSummary;
+import mobile.wnext.utils.ArrayUtils;
 import mobile.wnext.utils.DateUtils;
 
 /**
  * Created by Nnguyen on 16/01/2015.
  */
 public class WeeklySummaryViewModel implements View.OnClickListener {
+    private static int ANIMATE_X = 700;
+    private static int ANIMATE_Y = 1000;
 
-    private static final String LINE_LABEL_PUSH_UP = "Push ups";
-    ArrayList<String> names = new ArrayList<String>(){{
-        add("Mon");
-        add("Tue");
-        add("Wed");
-        add("Thu");
-        add("Fri");
-        add("Sat");
-        add("Sun");
-    }}; // TODO: move this to strings resource instead
+
+    ArrayList<String> names;
 
     // view variables
-    LineChart mChart, mChartRate;
+    LineChart mChartRate;
+    BarChart mChart;
     Button btnPrevious, btnNext;
-    TextView tvWeek;
+    TextView tvDateDisplay;
 
     View mView;
     Activity mActivity;
+    Resources mResources;
     List<TrainingLogChartSummary> weeklyData = null;
     Date firstDayOfWeek,lastDayOfWeek;
     Calendar currentSelectedWeek;
@@ -57,6 +59,8 @@ public class WeeklySummaryViewModel implements View.OnClickListener {
     public WeeklySummaryViewModel(Activity activity, View view) {
         mView = view;
         mActivity = activity;
+        mResources = activity.getResources();
+        names = ArrayUtils.toList(mResources.getStringArray(R.array.day_of_week));
         initializeUI();
         currentSelectedWeek = Calendar.getInstance();
         changeCurrentSelectedWeek(0); // load data for chart
@@ -65,8 +69,8 @@ public class WeeklySummaryViewModel implements View.OnClickListener {
     private void initializeUI() {
         btnPrevious = (Button) mView.findViewById(R.id.btnPrevious);
         btnNext = (Button) mView.findViewById(R.id.btnNext);
-        tvWeek = (TextView) mView.findViewById(R.id.tvWeek);
-        mChart = (LineChart) mView.findViewById(R.id.chart);
+        tvDateDisplay = (TextView) mView.findViewById(R.id.tvDateDisplay);
+        mChart = (BarChart) mView.findViewById(R.id.chart);
         mChartRate = (LineChart) mView.findViewById(R.id.chartRate);
 
         btnPrevious.setOnClickListener(this);
@@ -76,69 +80,16 @@ public class WeeklySummaryViewModel implements View.OnClickListener {
 
     private void setupChart() {
         // apply style for push ups chart
+        applyDefaultChartStyle(mChart);
+        applyDefaultChartStyle(mChartRate);
+
         // if enabled, the chart will always start at zero on the y-axis
-        mChart.setStartAtZero(true);
-        // disable the drawing of values into the chart
-        mChart.setDrawYValues(false);
-
-        mChart.setDrawBorder(false);
-        mChart.setDescription("Weekly push ups report");
-        mChart.setNoDataTextDescription("No data found for this week.");
-        mChart.setDrawVerticalGrid(true);
-        mChart.setDrawHorizontalGrid(true);
-        mChart.setDrawGridBackground(true);
-        mChart.setGridColor(Color.rgb(170,170,170));
-        mChart.setGridWidth(1.25f);
-
-        // enable touch gestures
-        mChart.setTouchEnabled(false);
-
-        // enable scaling and dragging
-        mChart.setDragEnabled(false);
-        mChart.setScaleEnabled(false);
-        mChart.setHighlightEnabled(false);
-
-
-        // if disabled, scaling can be done on x- and y-axis separately
-        mChart.setPinchZoom(false);
-        mChart.setBackgroundColor(Color.rgb(251, 245, 214));
-        mChart.setDrawYValues(true);
+        mChart.setDescription(mResources.getString(R.string.title_chart_push_ups_count));
+        mChart.setNoDataTextDescription(mResources.getString(R.string.no_data_found));
 
         //////// Apply styles for push up rate chart
-        mChartRate.setStartAtZero(true);
-        // disable the drawing of values into the chart
-        mChartRate.setDrawYValues(false);
-
-        mChartRate.setDrawBorder(false);
-        mChartRate.setDescription("Weekly push ups report");
-        mChartRate.setNoDataTextDescription("No data found for this week.");
-        mChartRate.setDrawVerticalGrid(true);
-        mChartRate.setDrawHorizontalGrid(true);
-        mChartRate.setDrawGridBackground(true);
-        mChartRate.setGridColor(Color.rgb(170,170,170));
-        mChartRate.setGridWidth(1.25f);
-
-        // disable touch gestures
-        mChartRate.setTouchEnabled(false);
-        mChartRate.setDragEnabled(false);
-        mChartRate.setScaleEnabled(false);
-        mChartRate.setHighlightEnabled(false);
-
-        // if disabled, scaling can be done on x- and y-axis separately
-        mChartRate.setPinchZoom(false);
-        mChartRate.setBackgroundColor(Color.rgb(251, 245, 214));
-        mChartRate.setDrawYValues(true);
-
-    }
-
-    private void applyLineStyle(LineDataSet lineDataSet) {
-        lineDataSet.setCircleSize(3f);
-        lineDataSet.setLineWidth(1.75f);
-        lineDataSet.setColor(Color.rgb(51,51,51));
-        lineDataSet.setCircleColor(Color.rgb(71,71,71));
-        lineDataSet.setHighLightColor(Color.rgb(81,81,81));
-        lineDataSet.setDrawCubic(true);
-        lineDataSet.setDrawFilled(true);
+        mChartRate.setDescription(mResources.getString(R.string.title_chart_rate_per_minute));
+        mChartRate.setNoDataTextDescription(mResources.getString(R.string.no_data_found));
     }
 
     private void calculateDateOfWeek() {
@@ -154,27 +105,23 @@ public class WeeklySummaryViewModel implements View.OnClickListener {
         // load data from database
         weeklyData = loadWeeklyData();
 
-        loadPushupData();
-
+        // render data to each chart
+        loadPushUpsData();
         loadRateData();
     }
 
-    private void loadPushupData() {
-        LineDataSet newPushUpsLineData = loadPushUpsLineData();
-        Log.i(Constants.TAG, "push up line count: "+newPushUpsLineData.getEntryCount());
-        ArrayList<LineDataSet> dataSet = new ArrayList<>();
-        dataSet.add(newPushUpsLineData);
-
-        LineData data = new LineData(names,dataSet);
+    private void loadPushUpsData() {
+        BarDataSet barDataSet = loadPushUpsBarData();
+        BarData barData = new BarData(names,barDataSet);
 
         if(mChart.getData()== null) {
-            mChart.setData(data);
+            mChart.setData(barData);
         }
         else {
             mChart.getData().removeDataSet(0);
-            mChart.getData().addDataSet(newPushUpsLineData);
+            mChart.getData().addDataSet(barDataSet);
         }
-        mChart.animateXY(700,1000);
+        mChart.animateXY(ANIMATE_X,ANIMATE_Y);
         mChart.invalidate(); // refresh the drawing
     }
 
@@ -191,12 +138,8 @@ public class WeeklySummaryViewModel implements View.OnClickListener {
             mChartRate.getData().removeDataSet(0);
             mChartRate.getData().addDataSet(dataSetRate.get(0));
         }
-        mChartRate.animateXY(700,1000);
+        mChartRate.animateXY(ANIMATE_X,ANIMATE_Y);
         mChartRate.invalidate(); // refresh the drawing
-    }
-
-    public void refreshDataForChart() {
-
     }
 
     private List<TrainingLogChartSummary> loadWeeklyData() {
@@ -206,7 +149,7 @@ public class WeeklySummaryViewModel implements View.OnClickListener {
             return queryData;
         }
         catch (SQLException sqle) {
-            Log.e(Constants.TAG, "Execption at loadWeeklyData", sqle);
+            Log.e(Constants.TAG, "Exception at loadWeeklyData", sqle);
             return null;
         }
     }
@@ -225,9 +168,28 @@ public class WeeklySummaryViewModel implements View.OnClickListener {
                 Log.e(Constants.TAG, "Cannot calculate day different", pe);
             }
         }
-        LineDataSet result = new LineDataSet(yData,"Push Ups");
+
+        LineDataSet result = new LineDataSet(yData,mResources.getString(R.string.push_ups));
         applyLineStyle(result);
         return result;
+    }
+
+    private BarDataSet loadPushUpsBarData() {
+        ArrayList<BarEntry> yData = new ArrayList<>();
+
+        for (TrainingLogChartSummary trainingLog : weeklyData) {
+            try {
+                yData.add(new BarEntry(trainingLog.getTotalCount(),
+                        DateUtils.DayDifferent(
+                                firstDayOfWeek,
+                                trainingLog.getDateTimeStart())));
+            }
+            catch(ParseException pe) {
+                Log.e(Constants.TAG, "Cannot calculate day different", pe);
+            }
+        }
+
+        return new BarDataSet(yData,mResources.getString(R.string.push_ups));
     }
 
     private LineDataSet loadPushUpsRateLineData() {
@@ -250,13 +212,9 @@ public class WeeklySummaryViewModel implements View.OnClickListener {
             }
         }
 
-        LineDataSet result = new LineDataSet(null,"Rate per minute");
+        LineDataSet result = new LineDataSet(yData,mResources.getString(R.string.rate_per_minute));
         applyLineStyle(result);
         return result;
-    }
-
-    private LineDataSet loadPushUpsTimeLineData() {
-        return null;
     }
 
     @Override
@@ -273,6 +231,44 @@ public class WeeklySummaryViewModel implements View.OnClickListener {
         currentSelectedWeek.add(Calendar.DATE,dayValue);
         calculateDateOfWeek();
         loadDataForChart();
-        tvWeek.setText(DateUtils.DMYFormat(firstDayOfWeek,"/")+" - "+DateUtils.DMYFormat(lastDayOfWeek,"/"));
+        tvDateDisplay.setText(DateUtils.DMYFormat(firstDayOfWeek, "/") + " - " + DateUtils.DMYFormat(lastDayOfWeek, "/"));
+    }
+
+    //// DEFAULT STYLING METHOD FOR CHART
+    private void applyDefaultChartStyle(BarLineChartBase<?> chart) {
+        chart.setStartAtZero(true);
+        chart.setDrawBorder(false);
+        chart.setDrawVerticalGrid(false);
+        chart.setDrawHorizontalGrid(true);
+        chart.setDrawGridBackground(false);
+        chart.setGridColor(mResources.getColor(R.color.grid_line));
+        chart.setGridWidth(getFloatResource(R.dimen.grid_width));
+
+        // enable touch gestures
+        chart.setTouchEnabled(false);
+
+        // enable scaling and dragging
+        chart.setDragEnabled(false);
+        chart.setScaleEnabled(false);
+        chart.setHighlightEnabled(false);
+
+        // if disabled, scaling can be done on x- and y-axis separately
+        chart.setPinchZoom(false);
+        chart.setBackgroundColor(mResources.getColor(R.color.chart_background));
+        chart.setDrawYValues(true);
+    }
+
+    private void applyLineStyle(LineDataSet lineDataSet) {
+        lineDataSet.setCircleSize(getFloatResource(R.dimen.circle_size));
+        lineDataSet.setLineWidth(getFloatResource(R.dimen.line_width));
+        lineDataSet.setDrawCubic(true);
+        lineDataSet.setColor(Color.RED);
+        lineDataSet.setCircleColor(mResources.getColor(R.color.red_circle));
+    }
+
+    private float getFloatResource(int dimenResourceId) {
+        TypedValue outValue = new TypedValue();
+        mResources.getValue(dimenResourceId, outValue, true);
+        return outValue.getFloat();
     }
 }

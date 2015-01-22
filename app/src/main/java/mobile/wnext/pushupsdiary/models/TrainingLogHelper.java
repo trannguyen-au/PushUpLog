@@ -113,6 +113,41 @@ public class TrainingLogHelper extends TableHelper {
         return finalResult;
     }
 
+    public List<TrainingLogChartSummary> findYearlyRecords(Date from, Date to) throws SQLException {
+        if(from.compareTo(to)!=-1)
+            throw new IllegalArgumentException("'From' date must be after 'To' date");
+
+        Dao<TrainingLog, Integer> dao = getDao();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        String rawQuery = "select substr(dateTimeStart,0,8)" +
+                ", sum(totalCount) as totalCount" +
+                ", sum(totalTime) as totalTime " +
+                " from traininglog " +
+                " where dateTimeStart < Datetime('"+ sdf.format(to)+" 00:00:00') " +
+                "   and dateTimeStart >= Datetime('"+sdf.format(from)+" 00:00:00') " +
+                " group by substr(dateTimeStart,0,8)";
+
+        GenericRawResults<String[]> rawResults = dao.queryRaw(rawQuery);
+
+        List<String[]> results = rawResults.getResults();
+        List<TrainingLogChartSummary> finalResult = new ArrayList<>();
+        for (int i=0;i<results.size();i++) {
+            String[] resultArray = results.get(i);
+
+            TrainingLogChartSummary chartSummary = new TrainingLogChartSummary();
+            try{
+                chartSummary.setDateTimeStart(sdf.parse(resultArray[0]));
+            } catch (Exception ex) {}
+
+            chartSummary.setTotalCount(Integer.valueOf(resultArray[1]));
+            chartSummary.setTotalTime(Integer.valueOf(resultArray[2]));
+            finalResult.add(chartSummary);
+        }
+
+        return finalResult;
+    }
+
     /**
      * Returns the Database Access Object (DAO) for our SimpleData class. It will create it or just give the cached
      * value.

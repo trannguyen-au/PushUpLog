@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="January 2014"
-            android:id="@+id/tvWeek"
+            android:id="@+id/tvDateDisplay"
             android:layout_column="1"
             android:gravity="center"/>
 
@@ -32,9 +32,20 @@
             android:layout_column="2"/>
     </TableRow>
     <TableRow>
-        <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/chart"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" android:layout_span="3" />
+            android:layout_height="match_parent" android:layout_span="3"
+            android:orientation="vertical">
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/chart"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/chartRate"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+        </LinearLayout>
     </TableRow>
 </TableLayout>
