@@ -397,6 +397,16 @@
                 android:textSize="40dp"
                 android:textColor="#ff333333" />
         </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/fragment_message"
+            android:layout_below="@+id/tableLayout"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="15dp"></FrameLayout>
+
     </RelativeLayout>
 
 </FrameLayout>

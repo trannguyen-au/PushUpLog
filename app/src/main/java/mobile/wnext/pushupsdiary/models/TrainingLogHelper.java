@@ -18,6 +18,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import mobile.wnext.pushupsdiary.Constants;
+
 /**
  * Created by Nnguyen on 12/01/2015.
  */
@@ -113,19 +115,19 @@ public class TrainingLogHelper extends TableHelper {
         return finalResult;
     }
 
-    public List<TrainingLogChartSummary> findYearlyRecords(Date from, Date to) throws SQLException {
-        if(from.compareTo(to)!=-1)
-            throw new IllegalArgumentException("'From' date must be after 'To' date");
+    public List<TrainingLogChartSummary> findYearlyRecords(int year) throws SQLException {
+        if(year<1990 || year >9999)
+            throw new IllegalArgumentException("'year' value is invalid");
 
         Dao<TrainingLog, Integer> dao = getDao();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-        String rawQuery = "select substr(dateTimeStart,0,8)" +
+        String rawQuery = "select substr(dateTimeStart,0,11)" +
                 ", sum(totalCount) as totalCount" +
                 ", sum(totalTime) as totalTime " +
                 " from traininglog " +
-                " where dateTimeStart < Datetime('"+ sdf.format(to)+" 00:00:00') " +
-                "   and dateTimeStart >= Datetime('"+sdf.format(from)+" 00:00:00') " +
+                " where dateTimeStart < Datetime('"+ (year+1)+"-01-01 00:00:00') " +
+                "   and dateTimeStart >= Datetime('"+year+"-01-01 00:00:00') " +
                 " group by substr(dateTimeStart,0,8)";
 
         GenericRawResults<String[]> rawResults = dao.queryRaw(rawQuery);
@@ -138,7 +140,9 @@ public class TrainingLogHelper extends TableHelper {
             TrainingLogChartSummary chartSummary = new TrainingLogChartSummary();
             try{
                 chartSummary.setDateTimeStart(sdf.parse(resultArray[0]));
-            } catch (Exception ex) {}
+            } catch (Exception ex) {
+                Log.e(Constants.TAG, "ERROR: Cannot read date value of "+resultArray[0]+" at: findYearlyRecords("+year+")", ex);
+            }
 
             chartSummary.setTotalCount(Integer.valueOf(resultArray[1]));
             chartSummary.setTotalTime(Integer.valueOf(resultArray[2]));

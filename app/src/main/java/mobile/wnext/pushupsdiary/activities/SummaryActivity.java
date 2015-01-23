@@ -24,6 +24,11 @@ public class SummaryActivity extends ActionBarActivity {
         summaryViewModel = new SummaryViewModel(this);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        summaryViewModel.returnToMain();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -41,6 +46,10 @@ public class SummaryActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        }
+        else if(id == android.R.id.home) {
+            onBackPressed();
             return true;
         }
 

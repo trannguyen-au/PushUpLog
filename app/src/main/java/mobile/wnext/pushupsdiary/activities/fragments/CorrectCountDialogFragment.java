@@ -44,7 +44,7 @@ implements View.OnClickListener{
             throw new IllegalArgumentException("Count parameter is required");
         }
 
-        Log.i(Constants.TAG, "Current count: "+mCurrentCount);
+        //Log.i(Constants.TAG, "Current count: "+mCurrentCount);
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         if(mMainView == null ) {

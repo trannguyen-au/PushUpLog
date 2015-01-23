@@ -52,7 +52,7 @@ public class YearlySummaryViewModel implements View.OnClickListener {
     Activity mActivity;
     Resources mResources;
     List<TrainingLogChartSummary> mChartYearlyData = null;
-    Date fromDate, toDate;
+    Calendar lastDayOfYear;
     Calendar currentSelectedYear;
 
     public YearlySummaryViewModel(Activity activity, View view) {
@@ -60,6 +60,11 @@ public class YearlySummaryViewModel implements View.OnClickListener {
         mActivity = activity;
         mResources = activity.getResources();
         currentSelectedYear = Calendar.getInstance();
+        currentSelectedYear.set(Calendar.DATE,1);
+        currentSelectedYear.set(Calendar.MONTH,0);
+        lastDayOfYear = (Calendar) currentSelectedYear.clone();
+        lastDayOfYear.set(Calendar.DATE,31);
+        lastDayOfYear.set(Calendar.MONTH,11);
         names = ArrayUtils.toList(mResources.getStringArray(R.array.month_of_year));
         initializeUI();
 
@@ -96,18 +101,13 @@ public class YearlySummaryViewModel implements View.OnClickListener {
         currentSelectedYear.add(Calendar.YEAR, value);
         calculateDateOfYear();
         loadDataForChart();
-        tvDateDisplay.setText(DateUtils.DMYFormat(fromDate, "/") + " - " + DateUtils.DMYFormat(toDate, "/"));
+        tvDateDisplay.setText(DateUtils.DMYFormat(currentSelectedYear.getTime(), "/") + " - " + DateUtils.DMYFormat(lastDayOfYear.getTime(), "/"));
     }
 
     private void calculateDateOfYear() {
-        Calendar tmpCalendar = (Calendar) currentSelectedYear.clone();
-        tmpCalendar.set(Calendar.DATE, 1);
-        tmpCalendar.set(Calendar.MONTH, 1);
-        fromDate = tmpCalendar.getTime();
-
-        tmpCalendar.set(Calendar.DATE, 31);
-        tmpCalendar.set(Calendar.MONTH, 12);
-        toDate = tmpCalendar.getTime();
+        lastDayOfYear = (Calendar) currentSelectedYear.clone();
+        lastDayOfYear.set(Calendar.DATE,31);
+        lastDayOfYear.set(Calendar.MONTH,11);
     }
 
     public void loadDataForChart() {
@@ -154,7 +154,7 @@ public class YearlySummaryViewModel implements View.OnClickListener {
     private List<TrainingLogChartSummary> loadYearlyData() {
         try {
             PushUpsDiaryApplication application = (PushUpsDiaryApplication) mActivity.getApplication();
-            List<TrainingLogChartSummary> queryData = application.getDbHelper().getTrainingLogHelper().findYearlyRecords(fromDate, toDate);
+            List<TrainingLogChartSummary> queryData = application.getDbHelper().getTrainingLogHelper().findYearlyRecords(currentSelectedYear.get(Calendar.YEAR));
             return queryData;
         }
         catch (SQLException sqle) {

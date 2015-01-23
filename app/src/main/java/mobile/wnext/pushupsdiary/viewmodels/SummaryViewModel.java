@@ -1,5 +1,6 @@
 package mobile.wnext.pushupsdiary.viewmodels;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentTransaction;
@@ -15,6 +16,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import java.util.ArrayList;
 
 import mobile.wnext.pushupsdiary.R;
+import mobile.wnext.pushupsdiary.activities.StartActivity;
 import mobile.wnext.pushupsdiary.adapters.SummaryTabPagerAdapter;
 
 /**
@@ -48,7 +50,7 @@ public class SummaryViewModel extends ViewModel {
 
         // enable tabs on action bar
         if(actionBar!=null) {
-
+            actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
             ActionBar.TabListener tabListener = new ActionBar.TabListener() {
                 @Override
@@ -72,9 +74,12 @@ public class SummaryViewModel extends ViewModel {
             actionBar.addTab(actionBar.newTab().setText("Monthly").setTabListener(tabListener));
             actionBar.addTab(actionBar.newTab().setText("Yearly").setTabListener(tabListener));
         }
-
-
     }
 
+    public void returnToMain() {
+        Intent goToMainActivity = new Intent(activity.getApplicationContext(), StartActivity.class);
+        goToMainActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        activity.startActivity(goToMainActivity);
+    }
 
 }

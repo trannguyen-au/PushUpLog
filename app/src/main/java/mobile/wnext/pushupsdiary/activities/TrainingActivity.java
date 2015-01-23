@@ -18,6 +18,7 @@ public class TrainingActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_training);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         viewModel = new TrainingViewModel(this);
     }
 
@@ -47,6 +48,13 @@ public class TrainingActivity extends ActionBarActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        if(viewModel.onBackPressed()) {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -55,6 +63,10 @@ public class TrainingActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        }
+        else if(id == android.R.id.home) {
+            onBackPressed();
             return true;
         }
 

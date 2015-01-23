@@ -6,6 +6,10 @@
     <string name="title_activity_training">Training</string>
     <string name="title_activity_practice">Practice</string>
     <string name="title_activity_summary">Your Progress Summary</string>
+
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
     <string-array name="day_of_week">
         <item>Mon</item>
         <item>Tue</item>
@@ -30,6 +34,8 @@
         <item>Nov</item>
         <item>Dec</item>
     </string-array>
+
+    <string name="please_start_training_first">Please start the training first.</string>
 
     <string name="push_ups">Push ups</string>
     <string name="rate_per_minute">Rate per minute</string>
