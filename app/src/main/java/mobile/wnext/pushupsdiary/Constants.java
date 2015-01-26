@@ -10,4 +10,6 @@ public class Constants {
     public static final String MESSAGE_PARAM = "MESSAGE";
 
     public static final String MESSAGE_FRAGMENT_TAG = "MESSAGE_FRAGMENT";
+    public static final String PREF_DO_NOT_SHOW_INTRODUCTION = "DO_NOT_SHOW_INTRODUCTION";
+    public static final String PREF_APP_PRIVATE = "mobile.wnext.pushupsdiary.PREF";
 }

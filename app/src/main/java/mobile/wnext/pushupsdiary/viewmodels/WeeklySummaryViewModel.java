@@ -197,12 +197,9 @@ public class WeeklySummaryViewModel implements View.OnClickListener {
 
         for (TrainingLogChartSummary trainingLog : weeklyData) {
             try {
+                int ratePerMinute = (trainingLog.getTotalCount() * 60000) / (trainingLog.getTotalTime());
 
-                int totalCount = trainingLog.getTotalCount();
-                int totalTime = trainingLog.getTotalTime();
-                int rate = (totalCount * 60000) / (totalTime);
-
-                yData.add(new Entry(rate,
+                yData.add(new Entry(ratePerMinute,
                         DateUtils.DayDifferent(
                                 firstDayOfWeek,
                                 trainingLog.getDateTimeStart())));

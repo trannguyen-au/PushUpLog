@@ -503,9 +503,9 @@ public class TrainingViewModel extends ViewModel
     boolean isQuitConfirm = false;
 
     public boolean onBackPressed() {
-        if(!isQuitConfirm) {
+        if(!isQuitConfirm && mCurrentTrainingSet!=null) {
             Toast.makeText(activity.getApplicationContext(),"Are you sure to quit training? " +
-                    "Press back again in within "+String.valueOf(QUIT_CHANGE_OF_MIND_PERIOD / 1000)+" seconds to confirm."
+                    "Press back again to confirm."
                     ,Toast.LENGTH_LONG)
                     .show();
             isQuitConfirm = true;
