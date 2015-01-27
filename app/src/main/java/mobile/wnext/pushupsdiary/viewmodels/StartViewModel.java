@@ -2,11 +2,13 @@ package mobile.wnext.pushupsdiary.viewmodels;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -15,11 +17,14 @@ import java.util.Date;
 import java.util.List;
 
 import mobile.wnext.pushupsdiary.Constants;
+import mobile.wnext.pushupsdiary.OnConfirmDialogEvent;
 import mobile.wnext.pushupsdiary.R;
 import mobile.wnext.pushupsdiary.Utils;
 import mobile.wnext.pushupsdiary.activities.PracticeActivity;
 import mobile.wnext.pushupsdiary.activities.SummaryActivity;
 import mobile.wnext.pushupsdiary.activities.TrainingActivity;
+import mobile.wnext.pushupsdiary.activities.fragments.ConfirmDialogFragment;
+import mobile.wnext.pushupsdiary.activities.fragments.CongratulationDialogFragment;
 import mobile.wnext.pushupsdiary.models.PracticeLog;
 import mobile.wnext.pushupsdiary.models.TrainingSet;
 import mobile.wnext.utils.AndroidDatabaseManager;
@@ -97,7 +102,7 @@ public class StartViewModel extends ViewModel implements View.OnClickListener {
         tvTime= (TextView) activity.findViewById(R.id.tvTime);
         tvTotal= (TextView) activity.findViewById(R.id.tvTotal);
 
-        btnStartTraining= (Button) activity.findViewById(R.id.btnStartTraining);
+        btnStartTraining = (Button) activity.findViewById(R.id.btnStartTraining);
         btnStartTraining.setOnClickListener(this);
 
         btnPractice= (Button) activity.findViewById(R.id.btnPractice);

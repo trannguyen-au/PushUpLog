@@ -12,6 +12,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 
 import mobile.wnext.pushupsdiary.R;
+import mobile.wnext.pushupsdiary.ViewServer;
 import mobile.wnext.pushupsdiary.viewmodels.StartViewModel;
 
 
@@ -68,12 +69,20 @@ public class StartActivity extends ActionBarActivity {
         setContentView(R.layout.activity_start);
         loadAdRequest();
         startViewModel = new StartViewModel(this);
+        ViewServer.get(this).addWindow(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         startViewModel.refreshData();
+        ViewServer.get(this).setFocusedWindow(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ViewServer.get(this).removeWindow(this);
     }
 
 

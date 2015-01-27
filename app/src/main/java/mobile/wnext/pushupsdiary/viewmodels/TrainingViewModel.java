@@ -6,8 +6,11 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Vibrator;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
@@ -16,6 +19,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,11 +28,13 @@ import java.sql.SQLException;
 import java.util.Date;
 
 import mobile.wnext.pushupsdiary.Constants;
+import mobile.wnext.pushupsdiary.OnConfirmDialogEvent;
 import mobile.wnext.pushupsdiary.R;
 import mobile.wnext.pushupsdiary.Utils;
 import mobile.wnext.pushupsdiary.activities.SummaryActivity;
 import mobile.wnext.pushupsdiary.activities.fragments.AdFragment;
 import mobile.wnext.pushupsdiary.activities.fragments.ConfirmDialogFragment;
+import mobile.wnext.pushupsdiary.activities.fragments.CongratulationDialogFragment;
 import mobile.wnext.pushupsdiary.activities.fragments.CorrectCountDialogFragment;
 import mobile.wnext.pushupsdiary.activities.fragments.SimpleMessageFragment;
 import mobile.wnext.pushupsdiary.models.TrainingLog;
@@ -46,6 +52,9 @@ public class TrainingViewModel extends ViewModel
     private static final int PROXIMITY_MAX_NEAR_DISTANCE = 3;
     private static final int DEFAULT_RESTING_PERIOD = 60000; // 60 seconds
     private static final int QUIT_CHANGE_OF_MIND_PERIOD = 4000; //4 seconds
+    private static final String CONFIRM_CANCEL_RESTING_DIALOG_TAG = "ConfirmCancelRestingDialog";
+    public static final String CORRECT_COUNT_DIALOG_TAG = "CorrectCountDialog";
+    public static final String CONGRATULATION_DIALOG_TAG = "CongratulationDialog";
 
     // reference variables
     Sensor proximitySensor;
@@ -54,6 +63,9 @@ public class TrainingViewModel extends ViewModel
     // properties & flags
     boolean coolingDown = false;
     boolean isCompleted = false;
+
+    boolean isMute = false;
+    boolean isVibrate = true;
 
     // resting variables
     boolean isResting = false;
@@ -67,6 +79,7 @@ public class TrainingViewModel extends ViewModel
     TextView tvLRSet1,tvLRSet2,tvLRSet3,tvLRSet4;
     TextView tvCurrentSet1,tvCurrentSet2,tvCurrentSet3,tvCurrentSet4;
     Button btnDoneCurrentSet, btnCompleteTraining;
+    ImageButton btnSound, btnVibration;
 
     // push up count & training variables
     CountDownTimer mTrainingTimer;
@@ -85,10 +98,14 @@ public class TrainingViewModel extends ViewModel
     FragmentManager fragmentManager;
     Animation bouncingAnimation;
 
+    // hardware variables
+    MediaPlayer player;
+    Vibrator vibrator;
+
     public TrainingViewModel(Activity context) {
         super(context);
         currentCount = 0;
-        bouncingAnimation = AnimationUtils.loadAnimation(activity.getApplicationContext(),
+        bouncingAnimation = AnimationUtils.loadAnimation(activity,
                 R.anim.my_first_animate);
 
         initializeUI();
@@ -111,6 +128,9 @@ public class TrainingViewModel extends ViewModel
 
         updateMessageFragment(mAdFragment, Constants.MESSAGE_FRAGMENT_TAG);
 
+        // audio setting
+        activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
+        vibrator = (Vibrator) activity.getSystemService(Activity.VIBRATOR_SERVICE);
     }
 
     private void updateMessageFragment(Fragment fragment, String tag) {
@@ -135,10 +155,17 @@ public class TrainingViewModel extends ViewModel
         Log.i(Constants.TAG,"Training view is resume");
         coolingDown = false; // continue the counter
         sensorManager.registerListener(this, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
+        if(!vibrator.hasVibrator()) {
+            btnVibration.setVisibility(View.GONE);
+            isVibrate = false;
+        }
     }
     public void stopAndDestroy(){
         Log.i(Constants.TAG,"Training view is destroyed");
         // release resources
+        if(player!=null) {
+            player.release();
+        }
     }
 
     private void initializeSensor() {
@@ -172,6 +199,11 @@ public class TrainingViewModel extends ViewModel
         btnDoneCurrentSet.setOnClickListener(this);
         btnCompleteTraining = (Button) activity.findViewById(R.id.btnCompleteTraining);
         btnCompleteTraining.setOnClickListener(this);
+
+        btnSound = (ImageButton) activity.findViewById(R.id.btnSound);
+        btnSound.setOnClickListener(this);
+        btnVibration = (ImageButton) activity.findViewById(R.id.btnVibration);
+        btnVibration.setOnClickListener(this);
 
         resetAllCounterValues();
     }
@@ -210,6 +242,7 @@ public class TrainingViewModel extends ViewModel
         }
         catch (SQLException sqle) {
             Toast.makeText(activity, "Cannot access database for best record", Toast.LENGTH_SHORT).show();
+            Log.e(Constants.TAG, "Cannot access database for best record",sqle);
         }
     }
 
@@ -249,17 +282,17 @@ public class TrainingViewModel extends ViewModel
 
     private void resetCounterValues() {
         tvPushCounter.setText("0");
-        tvTimer.setText("00:00:000");
+        tvTimer.setText("0:00:000");
         currentCount = 0;
         currentTime = 0;
     }
 
     private void resetAllCounterValues() {
         resetCounterValues();
-        tvCurrentSet1.setText("0/00:00");
-        tvCurrentSet2.setText("0/00:00");
-        tvCurrentSet3.setText("0/00:00");
-        tvCurrentSet4.setText("0/00:00");
+        tvCurrentSet1.setText("0/0:00");
+        tvCurrentSet2.setText("0/0:00");
+        tvCurrentSet3.setText("0/0:00");
+        tvCurrentSet4.setText("0/0:00");
         currentSetIndex = 0;
     }
 
@@ -295,16 +328,72 @@ public class TrainingViewModel extends ViewModel
                         startResting();
                     }
                 });
-                dialogFragment.show(activity.getFragmentManager(),"CorrectCountDialog");
+                dialogFragment.show(activity.getFragmentManager(), CORRECT_COUNT_DIALOG_TAG);
             }
             else {
-                Toast.makeText(activity, activity.getResources().getString(R.string.please_start_training_first), Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, mResources.getString(R.string.please_start_training_first), Toast.LENGTH_SHORT).show();
             }
         }
         else if(view == btnCompleteTraining) {
+            finalStepBeforeComplete();
+        }
+        else if(view == btnSound) {
+            toggleSoundConfig();
+        }
+        else if(view == btnVibration) {
+            toggleVibrationConfig();
+        }
+    }
+
+    private void toggleVibrationConfig() {
+        isVibrate = !isVibrate;
+        if(isVibrate) {
+            btnVibration.setImageDrawable(mResources.getDrawable(R.drawable.vibrate_on));
+        }
+        else {
+            btnVibration.setImageDrawable(mResources.getDrawable(R.drawable.vibrate_off));
+        }
+    }
+
+    private void toggleSoundConfig() {
+        isMute = !isMute;
+        if(isMute) {
+            btnSound.setImageDrawable(mResources.getDrawable(R.drawable.sound_off));
+        }
+        else {
+            btnSound.setImageDrawable(mResources.getDrawable(R.drawable.sound_on));
+        }
+    }
+
+    private void finalStepBeforeComplete() {
+        // check if the record is break!
+        if(isBreakRecord()) {
+            // show congratulation dialog
+            CongratulationDialogFragment dialogFragment = new CongratulationDialogFragment();
+            Bundle args = new Bundle();
+            args.putInt(Constants.BEST_TOTAL_RECORD_PARAM, mTrainingLog.getTotalCount());
+            dialogFragment.setArguments(args);
+            dialogFragment.setEventListener(new OnConfirmDialogEvent() {
+                @Override
+                public void yes() {
+
+                }
+
+                @Override
+                public void no() {
+                    // do nothing
+                }
+            });
+            dialogFragment.show(activity.getFragmentManager(), CONGRATULATION_DIALOG_TAG);
+        }
+        else {
             // show result activity
             startActivity(SummaryActivity.class);
         }
+    }
+
+    private boolean isBreakRecord() {
+        return false;
     }
 
     private void startResting() {
@@ -326,7 +415,7 @@ public class TrainingViewModel extends ViewModel
             }.start();
         }
         else {
-            Toast.makeText(activity,"Currently resting mode",Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity,"Resting mode is already started",Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -343,26 +432,25 @@ public class TrainingViewModel extends ViewModel
         switch (currentSetIndex) {
             case 0:
                 tvCurrentSet1.setText(String.valueOf(currentCount)+"/"+getDisplayTimeShort(currentTime));
-                tvCurrentSet1.setTextColor(activity.getResources().getColor(R.color.label_value_recorded));
+                tvCurrentSet1.setTextColor(mResources.getColor(R.color.label_value_recorded));
                 break;
             case 1:
                 tvCurrentSet2.setText(String.valueOf(currentCount)+"/"+getDisplayTimeShort(currentTime));
-                tvCurrentSet2.setTextColor(activity.getResources().getColor(R.color.label_value_recorded));
+                tvCurrentSet2.setTextColor(mResources.getColor(R.color.label_value_recorded));
                 break;
             case 2:
                 tvCurrentSet3.setText(String.valueOf(currentCount)+"/"+getDisplayTimeShort(currentTime));
-                tvCurrentSet3.setTextColor(activity.getResources().getColor(R.color.label_value_recorded));
+                tvCurrentSet3.setTextColor(mResources.getColor(R.color.label_value_recorded));
                 break;
             case 3:
                 tvCurrentSet4.setText(String.valueOf(currentCount)+"/"+getDisplayTimeShort(currentTime));
-                tvCurrentSet4.setTextColor(activity.getResources().getColor(R.color.label_value_recorded));
+                tvCurrentSet4.setTextColor(mResources.getColor(R.color.label_value_recorded));
                 isCompleted = true;
                 break;
         }
 
         if(!isCompleted) {
             currentSetIndex++;
-            Log.i(Constants.TAG, "Current set index is " + currentSetIndex);
         }
         else {
             // display complete message
@@ -388,7 +476,7 @@ public class TrainingViewModel extends ViewModel
     }
 
     private String getDisplayTimeShort(long currentTime) {
-        return Utils.getDisplayTime(currentTime).substring(0,5);
+        return Utils.getDisplayTime(currentTime).substring(0,4);
     }
 
     private void countOne() {
@@ -405,7 +493,7 @@ public class TrainingViewModel extends ViewModel
                 args.putString(Constants.TITLE_PARAM, "Resting..");
                 args.putString(Constants.MESSAGE_PARAM, "Cancel resting?");
                 dialogFragment.setArguments(args);
-                dialogFragment.setEventListener(new ConfirmDialogFragment.OnConfirmDialogEvent() {
+                dialogFragment.setEventListener(new OnConfirmDialogEvent() {
                     @Override
                     public void yes() {
                         mRestingTimer.cancel();
@@ -415,19 +503,11 @@ public class TrainingViewModel extends ViewModel
 
                     @Override
                     public void no() {
-                        // do nothing
+                        // do nothing, simply close the dialog as default behavior
                     }
                 });
-                dialogFragment.show(activity.getFragmentManager(), "ConfirmCancelRestingDialog");
+                dialogFragment.show(activity.getFragmentManager(), CONFIRM_CANCEL_RESTING_DIALOG_TAG);
                 return;
-            }
-
-            if(currentCount==2) { // congrat fragment
-                updateMessageFragment(mMessageFragment, Constants.MESSAGE_FRAGMENT_TAG);
-            }
-
-            if(currentCount == 4) { // change back to ad fragment
-                updateMessageFragment(mAdFragment, Constants.MESSAGE_FRAGMENT_TAG);
             }
 
             if (currentCount == 0) {
@@ -452,15 +532,41 @@ public class TrainingViewModel extends ViewModel
 
                     @Override
                     public void onFinish() {
+                        // in the event that the clock run for too long, save the record data upon the clock stop
                         saveCurrentRecord();
-                        //Toast.makeText(activity,"Timer complete",Toast.LENGTH_SHORT).show();
                     }
-                }.start();
+                }.start(); // start the timer clock
             }
             if (!coolingDown) {
                 currentCount++;
                 mCurrentTrainingSet.setCount(currentCount);
                 tvPushCounter.setText(String.valueOf(currentCount));
+
+                // play sound and/or vibrate
+                if(!isMute) {
+                    if(player==null) {
+                        player = MediaPlayer.create(activity, R.raw.smw_kick);
+                        player.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                            @Override
+                            public boolean onError(MediaPlayer mediaPlayer, int i, int i2) {
+                                mediaPlayer.release();
+                                player = MediaPlayer.create(activity, R.raw.smw_kick);
+                                return true;
+                            }
+                        });
+                    }
+
+                    if(player.isPlaying()) {
+                        player.stop();
+                        player.seekTo(0);
+                    }
+
+                    player.start();
+                }
+                if(isVibrate && vibrator.hasVibrator()) {
+                    vibrator.vibrate(350);
+                }
+
                 coolingDown = true;
 
                 // start a little animation on the button
@@ -497,14 +603,14 @@ public class TrainingViewModel extends ViewModel
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
-        // ignore this event
+        // ignore this event from the proximity sensor
     }
 
     boolean isQuitConfirm = false;
 
     public boolean onBackPressed() {
         if(!isQuitConfirm && mCurrentTrainingSet!=null) {
-            Toast.makeText(activity.getApplicationContext(),"Are you sure to quit training? " +
+            Toast.makeText(activity,"Are you sure to quit training? " +
                     "Press back again to confirm."
                     ,Toast.LENGTH_LONG)
                     .show();

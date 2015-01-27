@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 
 import mobile.wnext.pushupsdiary.Constants;
+import mobile.wnext.pushupsdiary.OnConfirmDialogEvent;
 import mobile.wnext.pushupsdiary.R;
 
 /**
@@ -51,10 +52,5 @@ public class ConfirmDialogFragment extends DialogFragment {
 
     public void setEventListener(OnConfirmDialogEvent eventListener) {
         this.eventListener = eventListener;
-    }
-
-    public interface OnConfirmDialogEvent {
-        void yes();
-        void no();
     }
 }

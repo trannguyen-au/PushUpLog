@@ -5,7 +5,7 @@ package mobile.wnext.pushupsdiary;
  */
 public class Utils {
     public static String getDisplayTime(long currentTime) {
-        return getDisplayTime(currentTime, "%02d:%02d:%03d");
+        return getDisplayTime(currentTime, "%01d:%02d:%03d");
     }
 
     public static String getDisplayTime(long currentTime, String customFormat) {

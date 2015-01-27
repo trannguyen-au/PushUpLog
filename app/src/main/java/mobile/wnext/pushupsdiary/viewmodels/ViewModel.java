@@ -1,5 +1,6 @@
 package mobile.wnext.pushupsdiary.viewmodels;
 
+import android.content.res.Resources;
 import android.support.v7.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
@@ -16,6 +17,7 @@ public abstract class ViewModel {
 
     protected Activity activity;
     protected ActionBar mActionBar;
+    protected Resources mResources;
 
     public ViewModel(Activity activity) {
         this.activity = activity;
@@ -26,6 +28,8 @@ public abstract class ViewModel {
         if(activity.getClass() == ActionBarActivity.class) {
             mActionBar = ((ActionBarActivity)activity).getSupportActionBar();
         }
+
+        mResources = activity.getResources();
     }
 
     public void startActivity(Class<? extends Activity> activityClass) {

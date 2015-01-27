@@ -46,5 +46,6 @@
     <string name="yearly">Yearly</string>
     <string name="got_it">Got it!</string>
     <string name="do_not_show_again">Don\'t show again</string>
+    <string name="congratulation_message">Congratulation! You have achieved a new record of %s push ups within 1 training session!</string>
 
 </resources>
