@@ -36,4 +36,17 @@ public class TrainingLogChartSummary {
     public void setTotalTime(int totalTime) {
         this.totalTime = totalTime;
     }
+
+    public void addCount(int count) {
+        totalCount += count;
+    }
+
+    public void addTime(int time) {
+        totalTime += time;
+    }
+
+    public TrainingLogChartSummary() {
+        totalCount = 0;
+        totalTime = 0;
+    }
 }

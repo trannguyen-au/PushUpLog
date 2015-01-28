@@ -154,8 +154,29 @@ public class YearlySummaryViewModel implements View.OnClickListener {
     private List<TrainingLogChartSummary> loadYearlyData() {
         try {
             PushUpsDiaryApplication application = (PushUpsDiaryApplication) mActivity.getApplication();
-            List<TrainingLogChartSummary> queryData = application.getDbHelper().getTrainingLogHelper().findYearlyRecords(currentSelectedYear.get(Calendar.YEAR));
-            return queryData;
+            List<TrainingLogChartSummary> queryDataTraining = application.getDbHelper().getTrainingLogHelper().findYearlyRecords(currentSelectedYear.get(Calendar.YEAR));
+            List<TrainingLogChartSummary> queryDataPractice = application.getDbHelper().getPracticeLogHelper().findYearlyRecords(currentSelectedYear.get(Calendar.YEAR));
+
+            for (int i=0;i<queryDataPractice.size();i++) {
+                boolean isFound = false;
+                TrainingLogChartSummary dataPractice = queryDataPractice.get(i);
+                for (int j=0;j< queryDataTraining.size();j++) {
+                    TrainingLogChartSummary dataTraining = queryDataTraining.get(j);
+                    if(dataTraining.getDateTimeStart().getMonth() == dataPractice.getDateTimeStart().getMonth() &&
+                            dataTraining.getDateTimeStart().getYear() == dataPractice.getDateTimeStart().getYear()) {
+                        dataTraining.addCount(dataPractice.getTotalCount());
+                        dataTraining.addTime(dataPractice.getTotalTime());
+                        isFound = true;
+                    }
+                }
+
+                if(!isFound) {
+                    // add new data
+                    queryDataTraining.add(dataPractice);
+                }
+            }
+
+            return queryDataTraining;
         }
         catch (SQLException sqle) {
             Log.e(Constants.TAG, "Exception at loadYearlyData", sqle);

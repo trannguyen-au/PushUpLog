@@ -111,6 +111,7 @@ public class StartViewModel extends ViewModel implements View.OnClickListener {
         btnLog = (Button) activity.findViewById(R.id.btnLog);
         btnLog.setOnClickListener(this);
 
+        // TODO: remove this debug tool on release
         ivLogo = (ImageView) activity.findViewById(R.id.ivLogo);
         ivLogo.setOnClickListener(this);
     }

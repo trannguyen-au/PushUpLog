@@ -12,7 +12,7 @@ import java.util.Date;
  */
 @DatabaseTable
 public class TrainingLog {
-
+    public static final String TABLE_NAME = "traininglog";
     public static final String COL_ID = "id";
     public static final String COL_DATE_TIME_START = "dateTimeStart";
     public static final String COL_TOTAL_COUNT = "totalCount";

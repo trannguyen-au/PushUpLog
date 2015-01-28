@@ -69,6 +69,8 @@ public class StartActivity extends ActionBarActivity {
         setContentView(R.layout.activity_start);
         loadAdRequest();
         startViewModel = new StartViewModel(this);
+
+        //TODO: remove this debug tool on release
         ViewServer.get(this).addWindow(this);
     }
 
@@ -104,6 +106,7 @@ public class StartActivity extends ActionBarActivity {
         if (id == R.id.action_settings) {
             return true;
         }
+        // TODO: Create a setting activity
 
         return super.onOptionsItemSelected(item);
     }

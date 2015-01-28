@@ -11,6 +11,13 @@ import java.util.List;
  */
 @DatabaseTable
 public class PracticeLog {
+    public static final String TABLE_NAME = "practicelog";
+
+    public static final String COL_ID = "id";
+    public static final String COL_LOG_DATE = "logDate";
+    public static final String COL_COUNT_PUSH_UPS = "countPushUps";
+    public static final String COL_TOTAL_TIME = "countTime";
+
     @DatabaseField(generatedId = true)
     private int id;
     @DatabaseField(canBeNull = false)
@@ -18,7 +25,7 @@ public class PracticeLog {
     @DatabaseField(canBeNull = false)
     private int countPushUps;
     @DatabaseField
-    private int countTime; // time in seconds
+    private long countTime; // time in millisecond
 
 
 
@@ -52,11 +59,11 @@ public class PracticeLog {
         this.countPushUps = countPushUps;
     }
 
-    public int getCountTime() {
+    public long getCountTime() {
         return countTime;
     }
 
-    public void setCountTime(int countTime) {
+    public void setCountTime(long countTime) {
         this.countTime = countTime;
     }
 }

@@ -1,12 +1,138 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:layout_height="match_parent"
     tools:context="mobile.wnext.pushupsdiary.activities.PracticeActivity">
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="top"
+        android:scaleType="matrix"
+        android:src="@drawable/dark_background" />
+    <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent">
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:stretchColumns="0,1,2,3"
+        android:background="@drawable/practice_box"
+        android:id="@+id/tableLayout5">
+        <TableRow android:background="@drawable/summary_box_top"></TableRow>
+        <TableRow android:paddingTop="5dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Best"
+                      android:gravity="center"
+                      style="@style/PracticeLabel"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Last"
+                      android:gravity="center"
+                      style="@style/PracticeLabel"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Speed"
+                      android:gravity="center"
+                      style="@style/PracticeLabel"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Avg"
+                      android:gravity="center"
+                      style="@style/PracticeLabel"/>
 
-    <TextView android:text="Hello world" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        </TableRow>
+        <TableRow android:orientation="vertical">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="00"
+                      android:gravity="center"
+                      style="@style/SummaryFigure"
+                      android:id="@+id/tvPracticeBest"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="00"
+                      android:gravity="center"
+                      style="@style/SummaryFigure"
+                      android:id="@+id/tvPracticeLast"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="00/m"
+                      android:gravity="center"
+                      style="@style/SummaryFigure"
+                      android:id="@+id/tvPracticeSpeed"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="00/d"
+                      android:gravity="center"
+                      style="@style/SummaryFigure"
+                      android:id="@+id/tvPracticeAvgPerDay"/>
 
-</RelativeLayout>
+        </TableRow>
+        </TableLayout>
+
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tableLayout5"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:id="@+id/fragment_message">
+        </FrameLayout>
+
+        <LinearLayout
+            style="@style/RoundButton"
+            android:orientation="vertical"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:weightSum="1"
+            android:id="@+id/btnMainRound">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="86dp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="888"
+                android:id="@+id/tvPushUpCount"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_vertical"
+                android:textSize="80dp"
+                android:textStyle="bold"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="88:88:888"
+                android:id="@+id/tvPushUpTimer"
+                android:layout_gravity="center_horizontal"
+                android:textSize="40dp"
+                android:textColor="#ff333333"/>
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/frameLayout"
+            android:layout_marginTop="25dp"
+            android:layout_below="@+id/btnMainRound"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp">
+
+            <ImageButton
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/btnSound"
+                android:layout_gravity="left|top"
+                android:src="@drawable/sound_on"
+                android:background="#00ffffff"
+                android:scaleType="fitCenter"/>
+
+            <ImageButton
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/btnVibrate"
+                android:layout_gravity="right|top"
+                android:src="@drawable/vibrate_on"
+                android:background="#00ffffff"
+                android:scaleType="fitCenter"/>
+        </FrameLayout>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Complete"
+            android:id="@+id/btnComplete"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"/>
+    </RelativeLayout>
+</FrameLayout>

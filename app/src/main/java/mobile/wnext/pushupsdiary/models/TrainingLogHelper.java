@@ -87,13 +87,13 @@ public class TrainingLogHelper extends TableHelper {
         Dao<TrainingLog, Integer> dao = getDao();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-        String rawQuery = "select substr(dateTimeStart,0,11)" +
-                ", sum(totalCount) as totalCount" +
-                ", sum(totalTime) as totalTime " +
-                " from traininglog " +
-                " where dateTimeStart < Datetime('"+ sdf.format(to)+" 00:00:00') " +
-                "   and dateTimeStart >= Datetime('"+sdf.format(from)+" 00:00:00') " +
-                " group by substr(dateTimeStart,0,11)";
+        String rawQuery = "select substr("+TrainingLog.COL_DATE_TIME_START+",0,11)" +
+                ", sum("+TrainingLog.COL_TOTAL_COUNT+") as totalCount" +
+                ", sum("+TrainingLog.COL_TOTAL_TIME+") as totalTime " +
+                " from "+TrainingLog.TABLE_NAME+" " +
+                " where "+TrainingLog.COL_DATE_TIME_START+" < Datetime('"+ sdf.format(to)+" 00:00:00') " +
+                "   and "+TrainingLog.COL_DATE_TIME_START+" >= Datetime('"+sdf.format(from)+" 00:00:00') " +
+                " group by substr("+TrainingLog.COL_DATE_TIME_START+",0,11)"; // group up to date value
 
         GenericRawResults<String[]> rawResults = dao.queryRaw(rawQuery);
 
@@ -122,13 +122,13 @@ public class TrainingLogHelper extends TableHelper {
         Dao<TrainingLog, Integer> dao = getDao();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-        String rawQuery = "select substr(dateTimeStart,0,11)" +
-                ", sum(totalCount) as totalCount" +
-                ", sum(totalTime) as totalTime " +
-                " from traininglog " +
-                " where dateTimeStart < Datetime('"+ (year+1)+"-01-01 00:00:00') " +
-                "   and dateTimeStart >= Datetime('"+year+"-01-01 00:00:00') " +
-                " group by substr(dateTimeStart,0,8)";
+        String rawQuery = "select substr("+TrainingLog.COL_DATE_TIME_START+",0,11)" +
+                ", sum("+TrainingLog.COL_TOTAL_COUNT+") as totalCount" +
+                ", sum("+TrainingLog.COL_TOTAL_TIME+") as totalTime " +
+                " from "+TrainingLog.TABLE_NAME+" " +
+                " where "+TrainingLog.COL_DATE_TIME_START+" < Datetime('"+ (year+1)+"-01-01 00:00:00') " +
+                "   and "+TrainingLog.COL_DATE_TIME_START+" >= Datetime('"+year+"-01-01 00:00:00') " +
+                " group by substr("+TrainingLog.COL_DATE_TIME_START+",0,8)"; // group up to month value
 
         GenericRawResults<String[]> rawResults = dao.queryRaw(rawQuery);
 

@@ -160,8 +160,28 @@ public class MonthlySummaryViewModel implements View.OnClickListener {
     private List<TrainingLogChartSummary> loadMonthlyData() {
         try {
             PushUpsDiaryApplication application = (PushUpsDiaryApplication) mActivity.getApplication();
-            List<TrainingLogChartSummary> queryData = application.getDbHelper().getTrainingLogHelper().findRecords(fromDate, toDate);
-            return queryData;
+            List<TrainingLogChartSummary> queryDataTraining = application.getDbHelper().getTrainingLogHelper().findRecords(fromDate, toDate);
+            List<TrainingLogChartSummary> queryDataPractice = application.getDbHelper().getPracticeLogHelper().findRecords(fromDate, toDate);
+
+            for (int i=0;i<queryDataPractice.size();i++) {
+                boolean isFound = false;
+                TrainingLogChartSummary dataPractice = queryDataPractice.get(i);
+                for (int j=0;j< queryDataTraining.size();j++) {
+                    TrainingLogChartSummary dataTraining = queryDataTraining.get(j);
+                    if(dataTraining.getDateTimeStart().compareTo(dataPractice.getDateTimeStart()) == 0) {
+                        dataTraining.addCount(dataPractice.getTotalCount());
+                        dataTraining.addTime(dataPractice.getTotalTime());
+                        isFound = true;
+                    }
+                }
+
+                if(!isFound) {
+                    // add new data
+                    queryDataTraining.add(dataPractice);
+                }
+            }
+
+            return queryDataTraining;
         }
         catch (SQLException sqle) {
             Log.e(Constants.TAG, "Exception at loadMonthlyData", sqle);

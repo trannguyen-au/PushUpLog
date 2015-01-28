@@ -50,6 +50,13 @@
         <item name="android:layout_gravity">center_horizontal</item>
     </style>
 
+    <style name="PracticeLabel">
+        <item name="android:textColor">#ffffffff</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:layout_marginBottom">2dp</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+    </style>
+
     <style name="SummaryFigure">
         <item name="android:textColor">#ffECCB0F</item>
         <item name="android:layout_gravity">center_horizontal</item>

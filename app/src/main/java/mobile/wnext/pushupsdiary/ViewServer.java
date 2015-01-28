@@ -31,6 +31,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewDebug;
 
+// TODO: remove this debug tool on release
 public class ViewServer implements Runnable {
     /**
      * The default port used to start view servers.

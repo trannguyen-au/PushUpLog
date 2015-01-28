@@ -38,17 +38,10 @@ public class IntroductionActivity extends ActionBarActivity {
     }
 
     private void applyPreferenceDoNotShowAgain(boolean isDoNotShow) {
-        SharedPreferences sharedPreferences = getSharedPreferences(Constants.PREF_DO_NOT_SHOW_INTRODUCTION, MODE_PRIVATE);
-        if(sharedPreferences.contains(Constants.PREF_DO_NOT_SHOW_INTRODUCTION)) {
-            sharedPreferences.edit()
-                    .putBoolean(Constants.PREF_DO_NOT_SHOW_INTRODUCTION,isDoNotShow)
-                    .apply();
-        }
-        else {
-            sharedPreferences.edit()
-                    .putBoolean(Constants.PREF_DO_NOT_SHOW_INTRODUCTION,isDoNotShow)
-                    .apply();
-        }
+        SharedPreferences sharedPreferences = getSharedPreferences(Constants.PREF_APP_PRIVATE, MODE_PRIVATE);
+        sharedPreferences.edit()
+                .putBoolean(Constants.PREF_DO_NOT_SHOW_INTRODUCTION,isDoNotShow)
+                .apply();
     }
 
     @Override

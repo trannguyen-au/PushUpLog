@@ -2,6 +2,7 @@ package mobile.wnext.pushupsdiary.viewmodels;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -47,14 +48,10 @@ public class TrainingViewModel extends ViewModel
         implements View.OnClickListener, SensorEventListener
 {
     // constants
-    private static final int COOL_DOWN_PERIOD = 350;
     private static final Object countLock = new Object(); // count lock for multi-threading control
-    private static final int PROXIMITY_MAX_NEAR_DISTANCE = 3;
-    private static final int DEFAULT_RESTING_PERIOD = 60000; // 60 seconds
-    private static final int QUIT_CHANGE_OF_MIND_PERIOD = 4000; //4 seconds
     private static final String CONFIRM_CANCEL_RESTING_DIALOG_TAG = "ConfirmCancelRestingDialog";
-    public static final String CORRECT_COUNT_DIALOG_TAG = "CorrectCountDialog";
-    public static final String CONGRATULATION_DIALOG_TAG = "CongratulationDialog";
+    private static final String CORRECT_COUNT_DIALOG_TAG = "CorrectCountDialog";
+    private static final String CONGRATULATION_DIALOG_TAG = "CongratulationDialog";
 
     // reference variables
     Sensor proximitySensor;
@@ -63,13 +60,14 @@ public class TrainingViewModel extends ViewModel
     // properties & flags
     boolean coolingDown = false;
     boolean isCompleted = false;
+    boolean isQuitConfirm = false;
 
     boolean isMute = false;
     boolean isVibrate = true;
 
     // resting variables
     boolean isResting = false;
-    int restingTimeElapse = DEFAULT_RESTING_PERIOD;
+    int restingTimeElapse = Constants.DEFAULT_RESTING_PERIOD;
     CountDownTimer mRestingTimer;
 
     // view variables
@@ -102,14 +100,17 @@ public class TrainingViewModel extends ViewModel
     MediaPlayer player;
     Vibrator vibrator;
 
+    SharedPreferences mSharedPreferences;;
+
     public TrainingViewModel(Activity context) {
         super(context);
         currentCount = 0;
         bouncingAnimation = AnimationUtils.loadAnimation(activity,
                 R.anim.my_first_animate);
-
+        mSharedPreferences = activity.getSharedPreferences(Constants.PREF_APP_PRIVATE, Context.MODE_PRIVATE);
         initializeUI();
-        initializeSensor();
+        initializeSensorAndHardware();
+        loadPreference();
 
         loadLastRecordValues();
         loadBestRecordValues();
@@ -127,10 +128,11 @@ public class TrainingViewModel extends ViewModel
         fragmentManager = ((ActionBarActivity) context).getSupportFragmentManager();
 
         updateMessageFragment(mAdFragment, Constants.MESSAGE_FRAGMENT_TAG);
+    }
 
-        // audio setting
-        activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
-        vibrator = (Vibrator) activity.getSystemService(Activity.VIBRATOR_SERVICE);
+    private void loadPreference() {
+        isMute = mSharedPreferences.getBoolean(Constants.PREF_IS_MUTE_TRAINING,false);
+        isVibrate = mSharedPreferences.getBoolean(Constants.PREF_IS_VIBRATE_TRAINING,true);
     }
 
     private void updateMessageFragment(Fragment fragment, String tag) {
@@ -149,12 +151,14 @@ public class TrainingViewModel extends ViewModel
     public void pause(){
         Log.i(Constants.TAG,"Training view is pause");
         coolingDown = true; // prevent the counter
-        sensorManager.unregisterListener(this, proximitySensor);
+        if(proximitySensor!=null);
+            sensorManager.unregisterListener(this, proximitySensor);
     }
     public void resume(){
         Log.i(Constants.TAG,"Training view is resume");
         coolingDown = false; // continue the counter
-        sensorManager.registerListener(this, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
+        if(proximitySensor!=null);
+            sensorManager.registerListener(this, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
         if(!vibrator.hasVibrator()) {
             btnVibration.setVisibility(View.GONE);
             isVibrate = false;
@@ -168,9 +172,13 @@ public class TrainingViewModel extends ViewModel
         }
     }
 
-    private void initializeSensor() {
+    private void initializeSensorAndHardware() {
         sensorManager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
         proximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+
+        // audio & vibration setting
+        activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
+        vibrator = (Vibrator) activity.getSystemService(Activity.VIBRATOR_SERVICE);
     }
 
     private void initializeUI() {
@@ -353,6 +361,11 @@ public class TrainingViewModel extends ViewModel
         else {
             btnVibration.setImageDrawable(mResources.getDrawable(R.drawable.vibrate_off));
         }
+
+        // save to the preference
+        mSharedPreferences.edit()
+                .putBoolean(Constants.PREF_IS_VIBRATE_TRAINING, isVibrate)
+                .apply();
     }
 
     private void toggleSoundConfig() {
@@ -363,6 +376,11 @@ public class TrainingViewModel extends ViewModel
         else {
             btnSound.setImageDrawable(mResources.getDrawable(R.drawable.sound_on));
         }
+
+        // save to the preference
+        mSharedPreferences.edit()
+                .putBoolean(Constants.PREF_IS_MUTE_TRAINING, isMute)
+                .apply();
     }
 
     private void finalStepBeforeComplete() {
@@ -371,12 +389,13 @@ public class TrainingViewModel extends ViewModel
             // show congratulation dialog
             CongratulationDialogFragment dialogFragment = new CongratulationDialogFragment();
             Bundle args = new Bundle();
-            args.putInt(Constants.BEST_TOTAL_RECORD_PARAM, mTrainingLog.getTotalCount());
+            String message = String.format(mResources.getString(R.string.congratulation_message),mTrainingLog.getTotalCount());
+            args.putString(Constants.MESSAGE_PARAM, message);
             dialogFragment.setArguments(args);
             dialogFragment.setEventListener(new OnConfirmDialogEvent() {
                 @Override
                 public void yes() {
-
+                    startActivity(SummaryActivity.class);
                 }
 
                 @Override
@@ -393,14 +412,15 @@ public class TrainingViewModel extends ViewModel
     }
 
     private boolean isBreakRecord() {
+        // TODO: Check if break record
         return false;
     }
 
     private void startResting() {
         if(!isResting) {
             isResting = true;
-            restingTimeElapse = DEFAULT_RESTING_PERIOD;
-            mRestingTimer = new CountDownTimer(DEFAULT_RESTING_PERIOD,1000) {
+            restingTimeElapse = Constants.DEFAULT_RESTING_PERIOD;
+            mRestingTimer = new CountDownTimer(Constants.DEFAULT_RESTING_PERIOD,1000) {
                 @Override
                 public void onTick(long l) {
                     restingTimeElapse -= 1000;
@@ -526,7 +546,6 @@ public class TrainingViewModel extends ViewModel
                     @Override
                     public void onTick(long l) {
                         currentTime = (new Date()).getTime() - startTime.getTime();
-                        mCurrentTrainingSet.setTime(currentTime);
                         tvTimer.setText(Utils.getDisplayTime(currentTime));
                     }
 
@@ -540,6 +559,7 @@ public class TrainingViewModel extends ViewModel
             if (!coolingDown) {
                 currentCount++;
                 mCurrentTrainingSet.setCount(currentCount);
+                mCurrentTrainingSet.setTime(currentTime);
                 tvPushCounter.setText(String.valueOf(currentCount));
 
                 // play sound and/or vibrate
@@ -564,7 +584,7 @@ public class TrainingViewModel extends ViewModel
                     player.start();
                 }
                 if(isVibrate && vibrator.hasVibrator()) {
-                    vibrator.vibrate(350);
+                    vibrator.vibrate(Constants.COOL_DOWN_PERIOD);
                 }
 
                 coolingDown = true;
@@ -574,7 +594,7 @@ public class TrainingViewModel extends ViewModel
 
                 // start cooling down for a specified period to prevent accidental pressed which causing
                 // the count to be counted as 2
-                new CountDownTimer(COOL_DOWN_PERIOD, COOL_DOWN_PERIOD) {
+                new CountDownTimer(Constants.COOL_DOWN_PERIOD,Constants.COOL_DOWN_PERIOD) {
                     @Override
                     public void onTick(long l) {
                     }
@@ -592,7 +612,7 @@ public class TrainingViewModel extends ViewModel
     public void onSensorChanged(SensorEvent sensorEvent) {
         if(sensorEvent.sensor.getType() == Sensor.TYPE_PROXIMITY) {
             //Log.i(Constants.TAG, "Sensor value: " + sensorEvent.values[0] + ", accuracy:" + sensorEvent.accuracy);
-            if (sensorEvent.values[0] <= PROXIMITY_MAX_NEAR_DISTANCE) {
+            if (sensorEvent.values[0] <= Constants.PROXIMITY_MAX_NEAR_DISTANCE) {
                 // only count when the value changed to near
                 countOne();
             } else {
@@ -606,7 +626,7 @@ public class TrainingViewModel extends ViewModel
         // ignore this event from the proximity sensor
     }
 
-    boolean isQuitConfirm = false;
+
 
     public boolean onBackPressed() {
         if(!isQuitConfirm && mCurrentTrainingSet!=null) {
@@ -616,7 +636,7 @@ public class TrainingViewModel extends ViewModel
                     .show();
             isQuitConfirm = true;
             // giving 5 seconds to change of mind
-            new CountDownTimer(QUIT_CHANGE_OF_MIND_PERIOD,QUIT_CHANGE_OF_MIND_PERIOD) {
+            new CountDownTimer(Constants.QUIT_CHANGE_OF_MIND_PERIOD,Constants.QUIT_CHANGE_OF_MIND_PERIOD) {
                 @Override
                 public void onTick(long l) {}
 
