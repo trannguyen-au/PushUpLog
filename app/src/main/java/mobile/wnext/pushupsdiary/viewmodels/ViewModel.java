@@ -33,9 +33,17 @@ public abstract class ViewModel {
     }
 
     public void startActivity(Class<? extends Activity> activityClass) {
+        startActivity(activityClass, null);
+    }
+
+    public void startActivity(Class<? extends Activity> activityClass, Bundle extra) {
         Intent intent = new Intent(activity.getApplicationContext(),activityClass);
+        if(extra!=null) {
+            intent.putExtras(extra);
+        }
         activity.startActivity(intent);
     }
+
     public void startActivityForResult(Class<? extends  Activity> activityClass, int requestCode, Bundle options) {
         Intent intent = new Intent(activity.getApplicationContext(),activityClass);
         activity.startActivityForResult(intent, requestCode, options);

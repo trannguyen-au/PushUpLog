@@ -37,10 +37,6 @@ import mobile.wnext.utils.DateUtils;
  * Created by Nnguyen on 16/01/2015.
  */
 public class WeeklySummaryViewModel implements View.OnClickListener {
-    private static int ANIMATE_X = 700;
-    private static int ANIMATE_Y = 1000;
-
-
     ArrayList<String> names;
 
     // view variables
@@ -121,7 +117,7 @@ public class WeeklySummaryViewModel implements View.OnClickListener {
             mChart.getData().removeDataSet(0);
             mChart.getData().addDataSet(barDataSet);
         }
-        mChart.animateXY(ANIMATE_X,ANIMATE_Y);
+        mChart.animateXY(Constants.CHART_ANIMATE_X,Constants.CHART_ANIMATE_Y);
         mChart.invalidate(); // refresh the drawing
     }
 
@@ -138,7 +134,7 @@ public class WeeklySummaryViewModel implements View.OnClickListener {
             mChartRate.getData().removeDataSet(0);
             mChartRate.getData().addDataSet(dataSetRate.get(0));
         }
-        mChartRate.animateXY(ANIMATE_X,ANIMATE_Y);
+        mChartRate.animateXY(Constants.CHART_ANIMATE_X,Constants.CHART_ANIMATE_Y);
         mChartRate.invalidate(); // refresh the drawing
     }
 
@@ -217,7 +213,7 @@ public class WeeklySummaryViewModel implements View.OnClickListener {
 
         for (TrainingLogChartSummary trainingLog : weeklyData) {
             try {
-                int ratePerMinute = (trainingLog.getTotalCount() * 60000) / (trainingLog.getTotalTime());
+                int ratePerMinute = (trainingLog.getTotalCount() * Constants.ONE_MINUTE) / (trainingLog.getTotalTime());
 
                 yData.add(new Entry(ratePerMinute,
                         DateUtils.DayDifferent(

@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -37,10 +39,15 @@ public class StartViewModel extends ViewModel implements View.OnClickListener {
     TextView tvBest, tvLast, tvTotal, tvTime;
     Button btnStartTraining, btnPractice, btnLog;
     ImageView ivLogo;
+    Animation mAnimation;
+
+    int easterEggCount = 5;
 
     public StartViewModel(Activity context) {
         super(context);
         initializeUI();
+        mAnimation = AnimationUtils.loadAnimation(activity,
+                R.anim.button_bouncing_anim);
     }
 
     private void loadSummaryData() {
@@ -128,7 +135,20 @@ public class StartViewModel extends ViewModel implements View.OnClickListener {
             startActivity(SummaryActivity.class);
         }
         else if(view ==ivLogo) {
-            startActivity(AndroidDatabaseManager.class);
+            if(Constants.IS_DEBUG) {
+                startActivity(AndroidDatabaseManager.class);
+            }
+            else {
+                easterEggCount--;
+                if(easterEggCount <= 0) {
+                    easterEggCount = 5;
+                    //ivLogo.startAnimation(mAnimation);
+                    tvBest.startAnimation(mAnimation);
+                    tvLast.startAnimation(mAnimation);
+                    tvTotal.startAnimation(mAnimation);
+                    tvTime.startAnimation(mAnimation);
+                }
+            }
         }
     }
 }

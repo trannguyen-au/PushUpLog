@@ -73,7 +73,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="86dp"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="888"
+                android:text="0"
                 android:id="@+id/tvPushUpCount"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center_vertical"
@@ -85,7 +85,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="88:88:888"
+                android:text="00:00:000"
                 android:id="@+id/tvPushUpTimer"
                 android:layout_gravity="center_horizontal"
                 android:textSize="40dp"

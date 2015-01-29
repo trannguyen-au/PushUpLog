@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="ad_unit_id">ca-app-pub-6205043765034301/2958767476</string>
+    <string name="ad_interstitial_test_unit_id">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="ad_interstitial_unit_id">ca-app-pub-6205043765034301/4043170272</string>
+    <string name="ad_banner_unit_id">ca-app-pub-6205043765034301/1089703877</string>
 </resources>

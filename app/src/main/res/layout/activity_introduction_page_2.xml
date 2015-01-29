@@ -1,0 +1,48 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="mobile.wnext.pushupsdiary.activities.IntroductionActivity">
+
+    <TextView android:text="@string/introduction_message_dont_worry_if_the_count_is_missed" android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvMessage"
+        android:textColor="#ff000000"
+        android:gravity="center_horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="50dp"
+        android:textSize="18dp"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:src="@drawable/correct_push_up_dialog"
+        android:contentDescription="Correct Count Dialog"
+        android:layout_centerVertical="true"
+        android:layout_alignRight="@+id/tvMessage"
+        android:layout_alignEnd="@+id/tvMessage"/>
+
+    <Button
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="@string/got_it"
+        android:id="@+id/btnNext"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/do_not_show_again"
+        android:id="@+id/chkDontShow"
+        android:checked="false"
+        android:layout_above="@+id/btnNext"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"/>
+
+</RelativeLayout>

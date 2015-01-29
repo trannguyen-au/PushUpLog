@@ -37,8 +37,6 @@ import mobile.wnext.utils.DateUtils;
  * Created by Nnguyen on 16/01/2015.
  */
 public class YearlySummaryViewModel implements View.OnClickListener {
-    private static int ANIMATE_X = 700;
-    private static int ANIMATE_Y = 1000;
 
     ArrayList<String> names;
 
@@ -62,9 +60,7 @@ public class YearlySummaryViewModel implements View.OnClickListener {
         currentSelectedYear = Calendar.getInstance();
         currentSelectedYear.set(Calendar.DATE,1);
         currentSelectedYear.set(Calendar.MONTH,0);
-        lastDayOfYear = (Calendar) currentSelectedYear.clone();
-        lastDayOfYear.set(Calendar.DATE,31);
-        lastDayOfYear.set(Calendar.MONTH,11);
+        calculateDateOfYear(); // calculate the last day of year
         names = ArrayUtils.toList(mResources.getStringArray(R.array.month_of_year));
         initializeUI();
 
@@ -105,6 +101,7 @@ public class YearlySummaryViewModel implements View.OnClickListener {
     }
 
     private void calculateDateOfYear() {
+        // set the last day of year to be the 31st Dec of the same year
         lastDayOfYear = (Calendar) currentSelectedYear.clone();
         lastDayOfYear.set(Calendar.DATE,31);
         lastDayOfYear.set(Calendar.MONTH,11);
@@ -130,7 +127,7 @@ public class YearlySummaryViewModel implements View.OnClickListener {
             mChart.getData().removeDataSet(0);
             mChart.getData().addDataSet(barDataSet);
         }
-        mChart.animateXY(ANIMATE_X,ANIMATE_Y);
+        mChart.animateXY(Constants.CHART_ANIMATE_X,Constants.CHART_ANIMATE_Y);
         mChart.invalidate(); // refresh the drawing
     }
 
@@ -147,7 +144,7 @@ public class YearlySummaryViewModel implements View.OnClickListener {
             mChartRate.getData().removeDataSet(0);
             mChartRate.getData().addDataSet(dataSetRate.get(0));
         }
-        mChartRate.animateXY(ANIMATE_X,ANIMATE_Y);
+        mChartRate.animateXY(Constants.CHART_ANIMATE_X,Constants.CHART_ANIMATE_Y);
         mChartRate.invalidate(); // refresh the drawing
     }
 
@@ -221,7 +218,7 @@ public class YearlySummaryViewModel implements View.OnClickListener {
         for (TrainingLogChartSummary trainingLog : mChartYearlyData) {
             int totalCount = trainingLog.getTotalCount();
             int totalTime = trainingLog.getTotalTime();
-            int rate = (totalCount * 60000) / (totalTime);
+            int rate = (totalCount * Constants.ONE_MINUTE) / (totalTime);
 
             yData.add(new Entry(rate, trainingLog.getDateTimeStart().getMonth()));
         }

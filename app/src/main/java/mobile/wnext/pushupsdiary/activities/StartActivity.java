@@ -1,7 +1,6 @@
 package mobile.wnext.pushupsdiary.activities;
 
-import android.app.Activity;
-import android.support.v4.app.FragmentActivity;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,6 +10,8 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 
+import mobile.wnext.pushupsdiary.Constants;
+import mobile.wnext.pushupsdiary.PushUpsDiaryApplication;
 import mobile.wnext.pushupsdiary.R;
 import mobile.wnext.pushupsdiary.ViewServer;
 import mobile.wnext.pushupsdiary.viewmodels.StartViewModel;
@@ -25,7 +26,7 @@ public class StartActivity extends ActionBarActivity {
     private void loadAdRequest() {
         // Create the interstitial.
         interstitial = new InterstitialAd(this);
-        interstitial.setAdUnitId(getString(R.string.ad_unit_id));
+        interstitial.setAdUnitId(getString(R.string.ad_interstitial_unit_id));
         interstitial.setAdListener(new AdListener() {
             @Override
             public void onAdClosed() {
@@ -51,7 +52,7 @@ public class StartActivity extends ActionBarActivity {
 
     // Invoke displayInterstitial() when you are ready to display an interstitial.
     public boolean displayInterstitial() {
-        if (interstitial.isLoaded()) {
+        if (interstitial!=null && interstitial.isLoaded()) {
             interstitial.show();
             return true;
         } else {
@@ -67,31 +68,35 @@ public class StartActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
-        loadAdRequest();
         startViewModel = new StartViewModel(this);
 
-        //TODO: remove this debug tool on release
-        ViewServer.get(this).addWindow(this);
+        loadAdRequest();
+        if(Constants.IS_DEBUG)
+            ViewServer.get(this).addWindow(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         startViewModel.refreshData();
-        ViewServer.get(this).setFocusedWindow(this);
+        if(Constants.IS_DEBUG)
+            ViewServer.get(this).setFocusedWindow(this);
+
+        ((PushUpsDiaryApplication)getApplication()).checkIfTrialExpired();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        ViewServer.get(this).removeWindow(this);
+        if(Constants.IS_DEBUG)
+            ViewServer.get(this).removeWindow(this);
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_start, menu);
+        getMenuInflater().inflate(R.menu.menu_general, menu);
         return true;
     }
 
@@ -103,7 +108,9 @@ public class StartActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_about) {
+            Intent aboutIntent = new Intent(getApplicationContext(),AboutActivity.class);
+            startActivity(aboutIntent);
             return true;
         }
         // TODO: Create a setting activity

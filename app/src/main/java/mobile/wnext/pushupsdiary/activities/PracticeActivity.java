@@ -26,7 +26,7 @@ public class PracticeActivity extends ActionBarActivity {
         mViewModel = new PracticeViewModel(this);
 
         // start the introduction activity
-        if(!isSkipIntro()) {
+        if(!isSkipIntro() || true) {
             Intent intentIntro = new Intent(getApplicationContext(), IntroductionActivity.class);
             startActivityForResult(intentIntro,0);
         }
@@ -83,7 +83,7 @@ public class PracticeActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_practice, menu);
+        getMenuInflater().inflate(R.menu.menu_general, menu);
         return true;
     }
 
@@ -95,7 +95,9 @@ public class PracticeActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_about) {
+            Intent aboutIntent = new Intent(getApplicationContext(),AboutActivity.class);
+            startActivity(aboutIntent);
             return true;
         }
 

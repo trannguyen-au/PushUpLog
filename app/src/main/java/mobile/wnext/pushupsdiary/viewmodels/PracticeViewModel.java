@@ -12,6 +12,9 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Vibrator;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -23,10 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import mobile.wnext.pushupsdiary.Constants;
@@ -34,8 +34,10 @@ import mobile.wnext.pushupsdiary.OnConfirmDialogEvent;
 import mobile.wnext.pushupsdiary.R;
 import mobile.wnext.pushupsdiary.Utils;
 import mobile.wnext.pushupsdiary.activities.SummaryActivity;
+import mobile.wnext.pushupsdiary.activities.fragments.AdFragment;
 import mobile.wnext.pushupsdiary.activities.fragments.CongratulationDialogFragment;
 import mobile.wnext.pushupsdiary.activities.fragments.CorrectCountDialogFragment;
+import mobile.wnext.pushupsdiary.activities.fragments.SimpleMessageFragment;
 import mobile.wnext.pushupsdiary.models.PracticeLog;
 import mobile.wnext.pushupsdiary.models.PracticeLogHelper;
 
@@ -87,6 +89,10 @@ public class PracticeViewModel extends ViewModel implements View.OnClickListener
     Vibrator vibrator;
 
     // advertisement / message
+    private AdFragment mAdFragment;
+    private SimpleMessageFragment mMessageFragment;
+
+    FragmentManager fragmentManager;
 
     // others
     Animation bouncingAnimation;
@@ -96,7 +102,7 @@ public class PracticeViewModel extends ViewModel implements View.OnClickListener
         super(activity);
         mCurrentCount = 0;
         bouncingAnimation = AnimationUtils.loadAnimation(activity,
-                R.anim.my_first_animate);
+                R.anim.button_bouncing_anim);
         mSharedPreferences = activity.getSharedPreferences(Constants.PREF_APP_PRIVATE, Context.MODE_PRIVATE);
         initializeUI();
         initializeSensorAndHardware();
@@ -105,6 +111,27 @@ public class PracticeViewModel extends ViewModel implements View.OnClickListener
 
         // create data model
         mPracticeLog = new PracticeLog();
+
+        fragmentManager = ((ActionBarActivity) activity).getSupportFragmentManager();
+
+        if(Constants.ADS_SHOWING_MODE == Constants.ADS_MODE_RELEASE ||
+                Constants.ADS_SHOWING_MODE == Constants.ADS_MODE_DEBUG) {
+            mAdFragment = new AdFragment();
+            updateMessageFragment(mAdFragment, Constants.MESSAGE_FRAGMENT_TAG);
+        }
+    }
+
+    private void updateMessageFragment(Fragment fragment, String tag) {
+        if(fragmentManager.findFragmentByTag(tag)==null) {
+            fragmentManager.beginTransaction()
+                    .add(R.id.fragment_message, fragment, tag)
+                    .commit();
+        }
+        else {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_message, fragment, tag)
+                    .commit();
+        }
     }
 
     private void loadPreference() {
@@ -133,7 +160,7 @@ public class PracticeViewModel extends ViewModel implements View.OnClickListener
             for (int i=0;i<practiceLogList.size();i++) {
                 PracticeLog practiceLogRecord = practiceLogList.get(i);
                 totalPushUpCount += practiceLogRecord.getCountPushUps();
-                tmpSpeed = (practiceLogRecord.getCountPushUps() * 60000) / ((int)practiceLogRecord.getCountTime());
+                tmpSpeed = (practiceLogRecord.getCountPushUps() * Constants.ONE_MINUTE) / ((int)practiceLogRecord.getCountTime());
                 if(tmpSpeed > speedPerMinute)
                     speedPerMinute = tmpSpeed;
             }
@@ -214,7 +241,7 @@ public class PracticeViewModel extends ViewModel implements View.OnClickListener
     }
 
     private void resetAllCounterValues() {
-        tvPushUpCount.setText("000");
+        tvPushUpCount.setText("0");
         tvPushUpTimer.setText("00:00:000");
         mCurrentCount = 0;
         mCurrentTime = 0;
@@ -245,16 +272,18 @@ public class PracticeViewModel extends ViewModel implements View.OnClickListener
 
             if(mCurrentCount ==0 ) {
                 // start timer
-                mPushUpTimer = new CountDownTimer(999999,25) {
+                mPushUpTimer = new CountDownTimer(Constants.ONE_HOUR,25) {
                     @Override
-                    public void onTick(long currentTime) {
-                        mCurrentTime = 999999 - currentTime;
-                        tvPushUpTimer.setText(Utils.getDisplayTime(mCurrentTime));
+                    public void onTick(long elapseTime) {
+                        if(!isCompleted) {
+                            mCurrentTime = Constants.ONE_HOUR - elapseTime;
+                            tvPushUpTimer.setText(Utils.getDisplayTime(mCurrentTime));
+                        }
                     }
 
                     @Override
                     public void onFinish() {
-                        completePractice();
+                         completePractice();
                     }
                 }.start(); // start the timer clock;
             }
@@ -312,6 +341,7 @@ public class PracticeViewModel extends ViewModel implements View.OnClickListener
     }
 
     private void completePractice() {
+        isCompleted = true;
         // offer a popup to correct the push up count if any missing during the session
         CorrectCountDialogFragment dialogFragment = new CorrectCountDialogFragment();
         Bundle args = new Bundle();
@@ -327,52 +357,66 @@ public class PracticeViewModel extends ViewModel implements View.OnClickListener
             public void dialogClosing() {
                 // save data to database
                 savePracticeLog();
-                int isBreakRecord = isBreakRecord();
-                if(isBreakRecord > 0) {
-                    if((isBreakRecord & BREAK_BEST_RECORD) == BREAK_BEST_RECORD) { // => break best record
-                        showCongratulationDialog(BREAK_BEST_RECORD);
-                    }
-                    if((isBreakRecord & BREAK_LAST_RECORD) == BREAK_LAST_RECORD){ // => break last record
-                        showCongratulationDialog(BREAK_LAST_RECORD);
-                    }
-                    if((isBreakRecord & BREAK_SPEED_LIMIT) == BREAK_SPEED_LIMIT) { // => break speed limit
-                        showCongratulationDialog(BREAK_SPEED_LIMIT);
-                    }
-                    // show congratulation dialog
-
-                }
-                else {
-                    finalStep();
-                }
+                congrateIfBreakRecord();
             }
         });
         dialogFragment.show(activity.getFragmentManager(), CORRECT_COUNT_DIALOG_TAG);
     }
 
+    int totalDisplayingDialog = 0;
+
+    private void congrateIfBreakRecord() {
+
+        boolean isBreakBestRecord =  false, isBreakLastRecord = false, isBreakSpeedLimit = false;
+        if(mCurrentCount > bestCount) isBreakBestRecord = true;
+        else if(mCurrentCount > lastCount) isBreakLastRecord = true;
+
+        int estimateSpeed = ((mCurrentCount * 60000) / (int)mCurrentTime);
+        if(estimateSpeed > speedPerMinute) isBreakSpeedLimit = true;
+
+        if(isBreakBestRecord || isBreakLastRecord || isBreakSpeedLimit) {
+            String message = "";
+            if(isBreakBestRecord) {
+                message = String.format(mResources.getString(R.string.congrat_message_break_best_record),mPracticeLog.getCountPushUps());
+                totalDisplayingDialog++;
+                showCongratulationDialog(message);
+            }
+            else if(isBreakLastRecord) {
+                message = String.format(mResources.getString(R.string.congrat_message_break_last_record));
+                totalDisplayingDialog++;
+                showCongratulationDialog(message);
+            }
+
+            if(isBreakSpeedLimit) {
+                message = String.format(mResources.getString(R.string.congrat_message_new_speed_limit),estimateSpeed);
+                totalDisplayingDialog++;
+                showCongratulationDialog(message);
+            }
+        }
+        else {
+            finalStep();
+        }
+    }
+
     private void finalStep() {
         // TODO: what to do in the final step of practice mode?
         // show result activity
-        startActivity(SummaryActivity.class);
+        Bundle showAdExtra = new Bundle();
+        showAdExtra.putBoolean(Constants.SHOW_ADS_PARAM, true);
+        startActivity(SummaryActivity.class, showAdExtra);
     }
 
-    private void showCongratulationDialog(int breakRecordType) {
-        switch (breakRecordType) {
-            case BREAK_BEST_RECORD:
-                break;
-            case BREAK_LAST_RECORD:
-                break;
-            case BREAK_SPEED_LIMIT:
-                break;
-        }
+    private void showCongratulationDialog(String message) {
         CongratulationDialogFragment dialogFragment = new CongratulationDialogFragment();
         Bundle args = new Bundle();
-        String message = String.format(mResources.getString(R.string.congratulation_message),mPracticeLog.getCountPushUps());
         args.putString(Constants.MESSAGE_PARAM, message);
         dialogFragment.setArguments(args);
         dialogFragment.setEventListener(new OnConfirmDialogEvent() {
             @Override
             public void yes() {
-                finalStep();
+                totalDisplayingDialog--;
+                if(totalDisplayingDialog==0)
+                    finalStep();
             }
 
             @Override
@@ -391,23 +435,6 @@ public class PracticeViewModel extends ViewModel implements View.OnClickListener
         } catch (SQLException sqle) {
             Log.e(Constants.TAG, "save Practice Log", sqle);
         }
-    }
-
-    private int isBreakRecord() {
-        // TODO: Check if break record
-        boolean isBreakBestRecord =  false, isBreakLastRecord = false, isBreakSpeedLimit = false;
-        if(mCurrentCount > bestCount) isBreakBestRecord = true;
-        else if(mCurrentCount > lastCount) isBreakLastRecord = true;
-
-        int estimateSpeed = ((mCurrentCount * 60000) / (int)mCurrentTime);
-        if(estimateSpeed > speedPerMinute) isBreakSpeedLimit = true;
-
-        int returnValue = 0;
-        if(isBreakBestRecord) returnValue = returnValue | BREAK_BEST_RECORD;
-        else if(isBreakLastRecord) returnValue = returnValue | BREAK_LAST_RECORD;
-        if(isBreakSpeedLimit) returnValue = returnValue | BREAK_SPEED_LIMIT;
-
-        return returnValue;
     }
 
     private void toggleVibrationConfig() {

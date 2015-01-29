@@ -1,68 +1,43 @@
 package mobile.wnext.pushupsdiary.activities;
 
-import android.content.SharedPreferences;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
 
-import mobile.wnext.pushupsdiary.Constants;
+import mobile.wnext.pushupsdiary.OnIntroActionListener;
 import mobile.wnext.pushupsdiary.R;
+import mobile.wnext.pushupsdiary.adapters.IntroductionScreenPagerAdapter;
 
 public class IntroductionActivity extends ActionBarActivity {
 
-    Button btnGotIt;
-    CheckBox chkDontShow;
-
+    ViewPager mViewPager;
+    private ActionBar actionBar;
+    IntroductionScreenPagerAdapter mPagerAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_introduction);
-        btnGotIt = (Button) findViewById(R.id.btnNext);
-        chkDontShow = (CheckBox)findViewById(R.id.chkDontShow);
-        btnGotIt.setOnClickListener(new View.OnClickListener() {
+        setContentView(R.layout.activity_introduction_view_pager);
+        initializeUI();
+    }
+
+    private void initializeUI() {
+        mViewPager = (ViewPager) findViewById(R.id.introductionViewPager);
+        mPagerAdapter = new IntroductionScreenPagerAdapter(getSupportFragmentManager());
+        mPagerAdapter.setOnIntroActionListener(new OnIntroActionListener() {
             @Override
-            public void onClick(View view) {
-                if(chkDontShow.isChecked()) {
-                    setResult(RESULT_CANCELED);
+            public void nextButtonClicked() {
+                if(mViewPager.getCurrentItem() < mViewPager.getAdapter().getCount()-1) { // not the last item
+                    mViewPager.setCurrentItem(mViewPager.getCurrentItem()+1,true);
                 }
                 else {
-                    setResult(RESULT_OK);
+                    IntroductionActivity.this.finish();
                 }
-                finish();
             }
         });
-    }
-
-    private void applyPreferenceDoNotShowAgain(boolean isDoNotShow) {
-        SharedPreferences sharedPreferences = getSharedPreferences(Constants.PREF_APP_PRIVATE, MODE_PRIVATE);
-        sharedPreferences.edit()
-                .putBoolean(Constants.PREF_DO_NOT_SHOW_INTRODUCTION,isDoNotShow)
-                .apply();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.menu.menu_introduction, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        mViewPager.setAdapter(mPagerAdapter);
+        // hide the action bar
+        actionBar = getSupportActionBar();
+        actionBar.hide();
     }
 }

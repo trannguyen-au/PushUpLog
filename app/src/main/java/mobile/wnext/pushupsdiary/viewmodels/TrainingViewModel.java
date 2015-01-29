@@ -95,18 +95,20 @@ public class TrainingViewModel extends ViewModel
 
     FragmentManager fragmentManager;
     Animation bouncingAnimation;
+    SharedPreferences mSharedPreferences;;
 
     // hardware variables
     MediaPlayer player;
     Vibrator vibrator;
 
-    SharedPreferences mSharedPreferences;;
+    // others
+    int bestRecord = 0;
 
     public TrainingViewModel(Activity context) {
         super(context);
         currentCount = 0;
         bouncingAnimation = AnimationUtils.loadAnimation(activity,
-                R.anim.my_first_animate);
+                R.anim.button_bouncing_anim);
         mSharedPreferences = activity.getSharedPreferences(Constants.PREF_APP_PRIVATE, Context.MODE_PRIVATE);
         initializeUI();
         initializeSensorAndHardware();
@@ -121,18 +123,22 @@ public class TrainingViewModel extends ViewModel
                 .time(0)
                 .build();
 
-        mAdFragment = new AdFragment();
+        fragmentManager = ((ActionBarActivity) context).getSupportFragmentManager();
         mMessageFragment = new SimpleMessageFragment();
 
-        // attach ad fragment by code
-        fragmentManager = ((ActionBarActivity) context).getSupportFragmentManager();
-
-        updateMessageFragment(mAdFragment, Constants.MESSAGE_FRAGMENT_TAG);
+        if(Constants.ADS_SHOWING_MODE == Constants.ADS_MODE_RELEASE ||
+                Constants.ADS_SHOWING_MODE == Constants.ADS_MODE_DEBUG) {
+            mAdFragment = new AdFragment();
+            updateMessageFragment(mAdFragment, Constants.MESSAGE_FRAGMENT_TAG);
+        }
     }
 
     private void loadPreference() {
         isMute = mSharedPreferences.getBoolean(Constants.PREF_IS_MUTE_TRAINING,false);
         isVibrate = mSharedPreferences.getBoolean(Constants.PREF_IS_VIBRATE_TRAINING,true);
+
+        btnVibration.setImageDrawable(mResources.getDrawable(isVibrate?R.drawable.vibrate_on:R.drawable.vibrate_off));
+        btnSound.setImageDrawable(mResources.getDrawable(isMute?R.drawable.sound_off:R.drawable.sound_on));
     }
 
     private void updateMessageFragment(Fragment fragment, String tag) {
@@ -230,6 +236,7 @@ public class TrainingViewModel extends ViewModel
                 // find all the sets
                 int count = 0;
                 for (TrainingSet data : bestLogRecord.getTrainingSets()) { // using foreign collection reference
+                    if(bestRecord<data.getCount()) bestRecord = data.getCount();
                     switch (count) {
                         case 0:
                             tvBRSet1.setText(String.valueOf(data.getCount()));
@@ -252,6 +259,8 @@ public class TrainingViewModel extends ViewModel
             Toast.makeText(activity, "Cannot access database for best record", Toast.LENGTH_SHORT).show();
             Log.e(Constants.TAG, "Cannot access database for best record",sqle);
         }
+
+        Log.i(Constants.TAG, "Best record: "+String.valueOf(bestRecord));
     }
 
     private void loadLastRecordValues() {
@@ -355,12 +364,7 @@ public class TrainingViewModel extends ViewModel
 
     private void toggleVibrationConfig() {
         isVibrate = !isVibrate;
-        if(isVibrate) {
-            btnVibration.setImageDrawable(mResources.getDrawable(R.drawable.vibrate_on));
-        }
-        else {
-            btnVibration.setImageDrawable(mResources.getDrawable(R.drawable.vibrate_off));
-        }
+        btnVibration.setImageDrawable(mResources.getDrawable(isVibrate?R.drawable.vibrate_on:R.drawable.vibrate_off));
 
         // save to the preference
         mSharedPreferences.edit()
@@ -370,12 +374,7 @@ public class TrainingViewModel extends ViewModel
 
     private void toggleSoundConfig() {
         isMute = !isMute;
-        if(isMute) {
-            btnSound.setImageDrawable(mResources.getDrawable(R.drawable.sound_off));
-        }
-        else {
-            btnSound.setImageDrawable(mResources.getDrawable(R.drawable.sound_on));
-        }
+        btnSound.setImageDrawable(mResources.getDrawable(isMute?R.drawable.sound_off:R.drawable.sound_on));
 
         // save to the preference
         mSharedPreferences.edit()
@@ -389,13 +388,13 @@ public class TrainingViewModel extends ViewModel
             // show congratulation dialog
             CongratulationDialogFragment dialogFragment = new CongratulationDialogFragment();
             Bundle args = new Bundle();
-            String message = String.format(mResources.getString(R.string.congratulation_message),mTrainingLog.getTotalCount());
+            String message = String.format(mResources.getString(R.string.congrat_message_break_best_record),mTrainingLog.getTotalCount());
             args.putString(Constants.MESSAGE_PARAM, message);
             dialogFragment.setArguments(args);
             dialogFragment.setEventListener(new OnConfirmDialogEvent() {
                 @Override
                 public void yes() {
-                    startActivity(SummaryActivity.class);
+                    finalStep();
                 }
 
                 @Override
@@ -406,9 +405,14 @@ public class TrainingViewModel extends ViewModel
             dialogFragment.show(activity.getFragmentManager(), CONGRATULATION_DIALOG_TAG);
         }
         else {
-            // show result activity
-            startActivity(SummaryActivity.class);
+            finalStep();
         }
+    }
+
+    private void finalStep() {
+        Bundle showAdExtra = new Bundle();
+        showAdExtra.putBoolean(Constants.SHOW_ADS_PARAM, true);
+        startActivity(SummaryActivity.class,showAdExtra);
     }
 
     private boolean isBreakRecord() {
@@ -420,10 +424,10 @@ public class TrainingViewModel extends ViewModel
         if(!isResting) {
             isResting = true;
             restingTimeElapse = Constants.DEFAULT_RESTING_PERIOD;
-            mRestingTimer = new CountDownTimer(Constants.DEFAULT_RESTING_PERIOD,1000) {
+            mRestingTimer = new CountDownTimer(Constants.DEFAULT_RESTING_PERIOD, Constants.ONE_SECOND) {
                 @Override
                 public void onTick(long l) {
-                    restingTimeElapse -= 1000;
+                    restingTimeElapse -= Constants.ONE_SECOND;
                     updateRestingTimeDisplay(restingTimeElapse);
                 }
 
@@ -440,8 +444,8 @@ public class TrainingViewModel extends ViewModel
     }
 
     private void updateRestingTimeDisplay(int restingTimeElapse) {
-        tvPushCounter.setText(String.valueOf(restingTimeElapse/1000));
-        tvTimer.setText("Resting...");
+        tvPushCounter.setText(String.valueOf(restingTimeElapse/Constants.ONE_SECOND));
+        tvTimer.setText(mResources.getString(R.string.resting));
     }
 
     private void saveCurrentRecord() {
@@ -474,7 +478,7 @@ public class TrainingViewModel extends ViewModel
         }
         else {
             // display complete message
-            Toast.makeText(activity,"Well done! This training is completed.", Toast.LENGTH_SHORT)
+            Toast.makeText(activity, mResources.getString(R.string.well_done_you_have_complete_this_training_session), Toast.LENGTH_SHORT)
                     .show();
         }
     }
@@ -502,7 +506,7 @@ public class TrainingViewModel extends ViewModel
     private void countOne() {
         synchronized (countLock) {
             if(isCompleted) {
-                Toast.makeText(activity,"This set is completed", Toast.LENGTH_SHORT)
+                Toast.makeText(activity,mResources.getString(R.string.training_session_completed), Toast.LENGTH_SHORT)
                         .show();
                 return;
             }
@@ -510,8 +514,8 @@ public class TrainingViewModel extends ViewModel
                 // display cancel resting dialog
                 ConfirmDialogFragment dialogFragment = new ConfirmDialogFragment();
                 Bundle args = new Bundle();
-                args.putString(Constants.TITLE_PARAM, "Resting..");
-                args.putString(Constants.MESSAGE_PARAM, "Cancel resting?");
+                args.putString(Constants.TITLE_PARAM, mResources.getString(R.string.resting));
+                args.putString(Constants.MESSAGE_PARAM, mResources.getString(R.string.cancel_resting_question));
                 dialogFragment.setArguments(args);
                 dialogFragment.setEventListener(new OnConfirmDialogEvent() {
                     @Override
@@ -542,11 +546,14 @@ public class TrainingViewModel extends ViewModel
                         .time(0)
                         .startDate(startTime)
                         .build();
-                mTrainingTimer = new CountDownTimer(999999, 25) {
+                mTrainingTimer = new CountDownTimer(Constants.ONE_HOUR, 25) {
                     @Override
-                    public void onTick(long l) {
-                        currentTime = (new Date()).getTime() - startTime.getTime();
-                        tvTimer.setText(Utils.getDisplayTime(currentTime));
+                    public void onTick(long elapseTime) {
+                        if(!isCompleted && !isResting) {
+                            //currentTime = (new Date()).getTime() - startTime.getTime();
+                            currentTime = Constants.ONE_HOUR - elapseTime;
+                            tvTimer.setText(Utils.getDisplayTime(currentTime));
+                        }
                     }
 
                     @Override
@@ -561,6 +568,44 @@ public class TrainingViewModel extends ViewModel
                 mCurrentTrainingSet.setCount(currentCount);
                 mCurrentTrainingSet.setTime(currentTime);
                 tvPushCounter.setText(String.valueOf(currentCount));
+
+                // if user did more push up than the offset or his own best record
+                boolean isNoBestRecord = Constants.NO_ADS_PUSH_UP_COUNT > bestRecord;
+                if(isNoBestRecord && currentCount == Constants.NO_ADS_PUSH_UP_COUNT) {
+                    Bundle argsMessage = new Bundle();
+
+                    String message = String.format(mResources.getString(R.string.congrat_more_than_offset_push_up),
+                            Constants.NO_ADS_PUSH_UP_COUNT);
+                    if(mAdFragment!=null) {
+                        message += " "+mResources.getString(R.string.congrat_advertisement_is_cleared);
+                    }
+
+                    argsMessage.putString(Constants.MESSAGE_PARAM, message);
+                    if(!mMessageFragment.isAdded()) {
+                        mMessageFragment.setArguments(argsMessage);
+                    }
+                    else {
+                        mMessageFragment.updateMessage(argsMessage);
+                    }
+                    updateMessageFragment(mMessageFragment, Constants.MESSAGE_FRAGMENT_TAG);
+                }
+                else if(!isNoBestRecord && currentCount == bestRecord+1) {
+                    Bundle argsMessage = new Bundle();
+
+                    String message = mResources.getString(R.string.congrat_beat_best_record);
+                    if(mAdFragment!=null) {
+                        message += " "+mResources.getString(R.string.congrat_advertisement_is_cleared);
+                    }
+
+                    argsMessage.putString(Constants.MESSAGE_PARAM, message);
+                    if(!mMessageFragment.isAdded()) {
+                        mMessageFragment.setArguments(argsMessage);
+                    }
+                    else {
+                        mMessageFragment.updateMessage(argsMessage);
+                    }
+                    updateMessageFragment(mMessageFragment, Constants.MESSAGE_FRAGMENT_TAG);
+                }
 
                 // play sound and/or vibrate
                 if(!isMute) {

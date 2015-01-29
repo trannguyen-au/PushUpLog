@@ -36,9 +36,6 @@ import mobile.wnext.utils.DateUtils;
  * Created by Nnguyen on 16/01/2015.
  */
 public class MonthlySummaryViewModel implements View.OnClickListener {
-    private static int ANIMATE_X = 700;
-    private static int ANIMATE_Y = 1000;
-
     ArrayList<String> names;
 
     // view variables
@@ -136,7 +133,7 @@ public class MonthlySummaryViewModel implements View.OnClickListener {
             mChart.getData().removeDataSet(0);
             mChart.getData().addDataSet(barDataSet);
         }
-        mChart.animateXY(ANIMATE_X,ANIMATE_Y);
+        mChart.animateXY(Constants.CHART_ANIMATE_X,Constants.CHART_ANIMATE_Y);
         mChart.invalidate(); // refresh the drawing
     }
 
@@ -153,7 +150,7 @@ public class MonthlySummaryViewModel implements View.OnClickListener {
             mChartRate.getData().removeDataSet(0);
             mChartRate.getData().addDataSet(dataSetRate.get(0));
         }
-        mChartRate.animateXY(ANIMATE_X,ANIMATE_Y);
+        mChartRate.animateXY(Constants.CHART_ANIMATE_X,Constants.CHART_ANIMATE_Y);
         mChartRate.invalidate(); // refresh the drawing
     }
 
@@ -235,7 +232,7 @@ public class MonthlySummaryViewModel implements View.OnClickListener {
 
                 int totalCount = trainingLog.getTotalCount();
                 int totalTime = trainingLog.getTotalTime();
-                int rate = (totalCount * 60000) / (totalTime);
+                int rate = (totalCount * Constants.ONE_MINUTE) / (totalTime);
 
                 yData.add(new Entry(rate,
                         DateUtils.DayDifferent(

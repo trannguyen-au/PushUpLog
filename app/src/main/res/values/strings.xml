@@ -39,13 +39,59 @@
     <string name="rate_per_minute">Rate per minute</string>
     <string name="title_chart_push_ups_count">Push ups count report</string>
     <string name="title_chart_rate_per_minute">Push ups rate per minute report</string>
-    <string name="introduction_message">To start the training, simply position the phone close to your head start the first push up </string>
+    <string name="introduction_message">To start the training, simply position the phone close to your head and start the first push up.</string>
+    <string name="introduction_message_no_proximity_sensor">To start the training, simply hit the button with your chin when in lower position to make the count.</string>
+    <string name="introduction_message_dont_worry_if_the_count_is_missed">If you miss a count, do not worry about it as you will have a change to correct the number when you are finish.</string>
     <string name="no_data_found">No data found</string>
     <string name="weekly">Weekly</string>
     <string name="monthly">Monthly</string>
     <string name="yearly">Yearly</string>
     <string name="got_it">Got it!</string>
+    <string name="next">Next</string>
     <string name="do_not_show_again">Don\'t show again</string>
-    <string name="congratulation_message">Congratulation! You have achieved a new record of %s push ups within 1 training session!</string>
+    <string name="congrat_message_break_best_record">Congratulation! You have achieved a new record of %s push ups within 1 training session!</string>
+    <string name="congrat_message_break_last_record">YES! You did more push ups than the last session!</string>
+    <string name="congrat_message_new_speed_limit">BRAVO! You have pushed yourself to a new speed limit: %d per minute</string>
+    <string name="resting">Resting…</string>
+    <string name="cancel_resting_question">Cancel resting?</string>
+    <string name="training_session_completed">This training session is completed.</string>
+    <string name="well_done_you_have_complete_this_training_session">Well done! You have complete this training session.</string>
+    <string name="congrat_advertisement_is_cleared">This advertisement is temporarily cleared for your hard work!</string>
+    <string name="congrat_more_than_offset_push_up">Impressive!!! You have done %d push ups in one go! Keep up the power!!</string>
+    <string name="congrat_beat_best_record">Fantastic!! You have break your own best record!!</string>
+    <string name="title_activity_about">About Push Ups Diary</string>
 
+    <string name="privacy_statement" translatable="false">
+    <![CDATA[<html><body>
+        <h3>Push Ups Diary Android App</h3>
+
+        This privacy policy governs the use of the software application Push Ups Diary (“App”)
+        for mobile devices that was created by Nguyen Nguyen (“Developer”).<br /><br />
+
+        <b>What information do we collect?</b><br /><br />
+
+        The Developer does not intentionally collect or make use of any information including device’s GPS location,
+        phone contacts, emails, clipboards from your device or provided by you via the App.<br /><br />
+
+        <b>Third party links and advertisement</b><br /><br />
+
+        Occasionally, the app may include or offer third party products or services.
+        These third party app links have separate and independent privacy policies. Developer therefore
+        have no responsibility or liability for the content and activities of these apps. Nonetheless,
+        the Developer seek to protect the user experience on the app and welcome any feedback regarding
+        these promotion links. To ensure the best user experience for new user, the app will be ads-free
+        for a few days after installation. You have an option to remove ads by purchasing the ads-free version
+        using the button below.<br /><br />
+
+        <b>Your consent</b><br /><br />
+
+        By using the app, you consent to this privacy policy<br /><br />
+
+        <b>Feedback</b><br /><br />
+
+        Please use the Contact Developer button below for feedback or feature request. Any feedback and
+        contributions are welcome.<br /><br />
+        </body></html>]]>
+    </string>
+    <string name="action_about">About</string>
 </resources>

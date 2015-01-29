@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
+import mobile.wnext.pushupsdiary.Constants;
 import mobile.wnext.pushupsdiary.R;
 
 /**
@@ -26,10 +27,19 @@ public class AdFragment extends Fragment {
     public void onActivityCreated(Bundle bundle) {
         super.onActivityCreated(bundle);
         mAdView = (AdView) getView().findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice("F8DC72B4D101702C78B8BD905A34FAE9")
-                .build();
-        mAdView.loadAd(adRequest);
+        AdRequest adRequest = null;
+        if(Constants.ADS_SHOWING_MODE == Constants.ADS_MODE_DEBUG) {
+            adRequest = new AdRequest.Builder()
+                    .addTestDevice("F8DC72B4D101702C78B8BD905A34FAE9")
+                    .build();
+        }
+        else if(Constants.ADS_SHOWING_MODE == Constants.ADS_MODE_RELEASE) {
+            adRequest = new AdRequest.Builder()
+                    .build();
+        }
+        if(adRequest!=null) {
+            mAdView.loadAd(adRequest);
+        }
     }
 
     /** Called when leaving the activity */
