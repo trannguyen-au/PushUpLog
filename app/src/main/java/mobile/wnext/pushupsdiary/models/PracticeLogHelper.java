@@ -92,7 +92,8 @@ public class PracticeLogHelper extends TableHelper {
         String rawQuery = "select sum("+PracticeLog.COL_COUNT_PUSH_UPS+") as totalCount" +
                 ", sum("+PracticeLog.COL_TOTAL_TIME+") as totalTime " +
                 " from "+PracticeLog.TABLE_NAME+
-                " group by substr("+PracticeLog.COL_LOG_DATE+",0,11)";
+                " group by substr("+PracticeLog.COL_LOG_DATE+",0,11) " +
+                " order by "+PracticeLog.COL_LOG_DATE;
         GenericRawResults<String[]> rawResults = dao.queryRaw(rawQuery);
         List<String[]> results = rawResults.getResults();
         List<PracticeLog> finalResult = new ArrayList<>();
@@ -121,7 +122,8 @@ public class PracticeLogHelper extends TableHelper {
                 " from "+PracticeLog.TABLE_NAME+" " +
                 " where "+PracticeLog.COL_LOG_DATE+" < Datetime('"+ sdf.format(to)+" 00:00:00') " +
                 "   and "+PracticeLog.COL_LOG_DATE+" >= Datetime('"+sdf.format(from)+" 00:00:00') " +
-                " group by substr("+PracticeLog.COL_LOG_DATE+",0,11)"; // group up to date value
+                " group by substr("+PracticeLog.COL_LOG_DATE+",0,11) " +
+                " order by "+PracticeLog.COL_LOG_DATE; // group up to date value
 
         GenericRawResults<String[]> rawResults = dao.queryRaw(rawQuery);
 
@@ -156,7 +158,8 @@ public class PracticeLogHelper extends TableHelper {
                 " from "+PracticeLog.TABLE_NAME+" " +
                 " where "+PracticeLog.COL_LOG_DATE+" < Datetime('"+ (year+1)+"-01-01 00:00:00') " +
                 "   and "+PracticeLog.COL_LOG_DATE+" >= Datetime('"+year+"-01-01 00:00:00') " +
-                " group by substr("+PracticeLog.COL_LOG_DATE+",0,8)"; // group up to month value
+                " group by substr("+PracticeLog.COL_LOG_DATE+",0,8) " +
+                " order by "+PracticeLog.COL_LOG_DATE; // group up to month value
 
         GenericRawResults<String[]> rawResults = dao.queryRaw(rawQuery);
 

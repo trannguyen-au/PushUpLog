@@ -24,8 +24,7 @@
         android:src="@drawable/correct_push_up_dialog"
         android:contentDescription="Correct Count Dialog"
         android:layout_centerVertical="true"
-        android:layout_alignRight="@+id/tvMessage"
-        android:layout_alignEnd="@+id/tvMessage"/>
+        android:layout_centerHorizontal="true"/>
 
     <Button
         android:layout_width="70dp"

@@ -93,7 +93,8 @@ public class TrainingLogHelper extends TableHelper {
                 " from "+TrainingLog.TABLE_NAME+" " +
                 " where "+TrainingLog.COL_DATE_TIME_START+" < Datetime('"+ sdf.format(to)+" 00:00:00') " +
                 "   and "+TrainingLog.COL_DATE_TIME_START+" >= Datetime('"+sdf.format(from)+" 00:00:00') " +
-                " group by substr("+TrainingLog.COL_DATE_TIME_START+",0,11)"; // group up to date value
+                " group by substr("+TrainingLog.COL_DATE_TIME_START+",0,11) " +
+                " order by "+TrainingLog.COL_DATE_TIME_START; // group up to date value
 
         GenericRawResults<String[]> rawResults = dao.queryRaw(rawQuery);
 
@@ -128,7 +129,8 @@ public class TrainingLogHelper extends TableHelper {
                 " from "+TrainingLog.TABLE_NAME+" " +
                 " where "+TrainingLog.COL_DATE_TIME_START+" < Datetime('"+ (year+1)+"-01-01 00:00:00') " +
                 "   and "+TrainingLog.COL_DATE_TIME_START+" >= Datetime('"+year+"-01-01 00:00:00') " +
-                " group by substr("+TrainingLog.COL_DATE_TIME_START+",0,8)"; // group up to month value
+                " group by substr("+TrainingLog.COL_DATE_TIME_START+",0,8) " +
+                " order by "+TrainingLog.COL_DATE_TIME_START; // group up to month value
 
         GenericRawResults<String[]> rawResults = dao.queryRaw(rawQuery);
 

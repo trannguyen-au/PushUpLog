@@ -388,7 +388,7 @@ public class PracticeViewModel extends ViewModel implements View.OnClickListener
             }
 
             if(isBreakSpeedLimit) {
-                message = String.format(mResources.getString(R.string.congrat_message_new_speed_limit),estimateSpeed);
+                message = String.format(mResources.getString(R.string.congrat_message_new_power_limit),estimateSpeed);
                 totalDisplayingDialog++;
                 showCongratulationDialog(message);
             }

@@ -29,6 +29,7 @@ import java.util.List;
 import mobile.wnext.pushupsdiary.Constants;
 import mobile.wnext.pushupsdiary.PushUpsDiaryApplication;
 import mobile.wnext.pushupsdiary.R;
+import mobile.wnext.pushupsdiary.Utils;
 import mobile.wnext.pushupsdiary.models.TrainingLogChartSummary;
 import mobile.wnext.utils.ArrayUtils;
 import mobile.wnext.utils.DateUtils;
@@ -172,6 +173,9 @@ public class YearlySummaryViewModel implements View.OnClickListener {
                     queryDataTraining.add(dataPractice);
                 }
             }
+
+            // sort the data by datetime
+            Utils.sortByDate(queryDataTraining);
 
             return queryDataTraining;
         }

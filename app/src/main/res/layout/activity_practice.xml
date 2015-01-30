@@ -6,7 +6,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_gravity="top"
-        android:scaleType="matrix"
+        android:scaleType="centerCrop"
         android:src="@drawable/dark_background" />
     <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent">
     <TableLayout
@@ -17,16 +17,16 @@
         android:id="@+id/tableLayout5">
         <TableRow android:background="@drawable/summary_box_top"></TableRow>
         <TableRow android:paddingTop="5dp">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Best"
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/best"
                       android:gravity="center"
                       style="@style/PracticeLabel"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Last"
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/last"
                       android:gravity="center"
                       style="@style/PracticeLabel"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Speed"
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/power"
                       android:gravity="center"
                       style="@style/PracticeLabel"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Avg"
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/avg"
                       android:gravity="center"
                       style="@style/PracticeLabel"/>
 
@@ -127,7 +127,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Complete"
+            android:text="@string/complete"
             android:id="@+id/btnComplete"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"

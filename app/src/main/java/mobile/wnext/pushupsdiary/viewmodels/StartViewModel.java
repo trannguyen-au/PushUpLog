@@ -1,8 +1,6 @@
 package mobile.wnext.pushupsdiary.viewmodels;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -10,23 +8,18 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import mobile.wnext.pushupsdiary.Constants;
-import mobile.wnext.pushupsdiary.OnConfirmDialogEvent;
 import mobile.wnext.pushupsdiary.R;
 import mobile.wnext.pushupsdiary.Utils;
 import mobile.wnext.pushupsdiary.activities.PracticeActivity;
 import mobile.wnext.pushupsdiary.activities.SummaryActivity;
 import mobile.wnext.pushupsdiary.activities.TrainingActivity;
-import mobile.wnext.pushupsdiary.activities.fragments.ConfirmDialogFragment;
-import mobile.wnext.pushupsdiary.activities.fragments.CongratulationDialogFragment;
 import mobile.wnext.pushupsdiary.models.PracticeLog;
 import mobile.wnext.pushupsdiary.models.TrainingSet;
 import mobile.wnext.utils.AndroidDatabaseManager;
@@ -55,7 +48,9 @@ public class StartViewModel extends ViewModel implements View.OnClickListener {
         int bestPushUps = 0;
         long totalTime = 0;
         int lastPushup = 0;
-        Date lastPushupDate = new Date(1980,1,1);
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(0);
+        Date lastPushupDate = c.getTime();
         try {
             List<PracticeLog> allPractice = application.getDbHelper().getPracticeLogHelper().getDao().queryForAll();
             if(allPractice!=null && allPractice.size()>0) {
@@ -91,7 +86,7 @@ public class StartViewModel extends ViewModel implements View.OnClickListener {
 
             tvTotal.setText(String.valueOf(totalPushUps));
             tvBest.setText(String.valueOf(bestPushUps));
-            tvTime.setText(String.valueOf(Utils.getHourAndMinuteTime(totalTime)));
+            tvTime.setText(String.valueOf(Utils.getTimeSpanDisplay(totalTime)));
             tvLast.setText(String.valueOf(lastPushup));
         }
         catch (SQLException sqle) {
@@ -139,15 +134,22 @@ public class StartViewModel extends ViewModel implements View.OnClickListener {
                 startActivity(AndroidDatabaseManager.class);
             }
             else {
-                easterEggCount--;
+                /*easterEggCount--;
                 if(easterEggCount <= 0) {
                     easterEggCount = 5;
-                    //ivLogo.startAnimation(mAnimation);
+                    new Runnable() {
+
+                        @Override
+                        public void run() {
+                            ivLogo.startAnimation(mAnimation);
+                        }
+                    }.run();
+
                     tvBest.startAnimation(mAnimation);
                     tvLast.startAnimation(mAnimation);
                     tvTotal.startAnimation(mAnimation);
                     tvTime.startAnimation(mAnimation);
-                }
+                }*/
             }
         }
     }

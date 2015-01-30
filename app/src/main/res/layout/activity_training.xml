@@ -5,9 +5,8 @@
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_gravity="top"
         android:src="@drawable/dark_background"
-        android:scaleType="matrix" />
+        android:scaleType="centerCrop"/>
 
     <RelativeLayout android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -37,7 +36,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:text="Set 1"
+                            android:text="@string/set_1"
                             android:id="@+id/textView2"
                             android:layout_gravity="center"
                             android:layout_column="1"
@@ -47,7 +46,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:text="Set 2"
+                            android:text="@string/set_2"
                             android:id="@+id/textView4"
                             android:layout_gravity="center"
                             android:layout_column="2"
@@ -57,7 +56,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:text="Set 3"
+                            android:text="@string/set_3"
                             android:id="@+id/textView6"
                             android:layout_gravity="center"
                             android:layout_column="3"
@@ -67,7 +66,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:text="Set 4"
+                            android:text="@string/set_4"
                             android:id="@+id/textView8"
                             android:layout_gravity="center"
                             android:layout_column="4"
@@ -81,7 +80,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:text="Last Record"
+                            android:text="@string/last_record"
                             android:layout_gravity="center"
                             style="@style/TrainingSetHeaderLabel" />
 
@@ -95,7 +94,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textAppearance="?android:attr/textAppearanceMedium"
-                                android:text="888"
+                                android:text="0"
                                 android:id="@+id/tvLRSet1"
                                 android:layout_gravity="center"
                                 style="@style/TrainingSetComponentValue" />
@@ -112,7 +111,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textAppearance="?android:attr/textAppearanceMedium"
-                                android:text="888"
+                                android:text="0"
                                 android:id="@+id/tvLRSet2"
                                 android:layout_gravity="center"
                                 style="@style/TrainingSetComponentValue" />
@@ -128,7 +127,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textAppearance="?android:attr/textAppearanceMedium"
-                                android:text="888"
+                                android:text="0"
                                 android:id="@+id/tvLRSet3"
                                 android:layout_gravity="center"
                                 style="@style/TrainingSetComponentValue" />
@@ -144,7 +143,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textAppearance="?android:attr/textAppearanceMedium"
-                                android:text="888"
+                                android:text="0"
                                 android:id="@+id/tvLRSet4"
                                 android:layout_gravity="center"
                                 style="@style/TrainingSetComponentValue" />
@@ -159,7 +158,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:text="Best Record"
+                            android:text="@string/best_record"
                             android:layout_gravity="center"
                             style="@style/TrainingSetHeaderLabel" />
 
@@ -173,7 +172,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textAppearance="?android:attr/textAppearanceMedium"
-                                android:text="888"
+                                android:text="0"
                                 android:id="@+id/tvBRSet1"
                                 android:layout_gravity="center"
                                 style="@style/TrainingSetComponentValue" />
@@ -189,7 +188,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textAppearance="?android:attr/textAppearanceMedium"
-                                android:text="888"
+                                android:text="0"
                                 android:id="@+id/tvBRSet2"
                                 android:layout_gravity="center"
                                 style="@style/TrainingSetComponentValue" />
@@ -205,7 +204,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textAppearance="?android:attr/textAppearanceMedium"
-                                android:text="888"
+                                android:text="0"
                                 android:id="@+id/tvBRSet3"
                                 android:layout_gravity="center"
                                 style="@style/TrainingSetComponentValue" />
@@ -221,7 +220,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textAppearance="?android:attr/textAppearanceMedium"
-                                android:text="888"
+                                android:text="0"
                                 android:id="@+id/tvBRSet4"
                                 android:layout_gravity="center"
                                 style="@style/TrainingSetComponentValue" />
@@ -260,7 +259,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="Set 1"
+                        android:text="@string/set_1"
                         android:id="@+id/textView19"
                         android:layout_gravity="center"
                         style="@style/TrainingSetHeaderLabel" />
@@ -269,7 +268,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="888"
+                        android:text="0/0:00"
                         android:id="@+id/tvCurrentSet1"
                         android:layout_gravity="center"
                         style="@style/TrainingSetComponentValue" />
@@ -284,7 +283,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="Set 2"
+                        android:text="@string/set_2"
                         android:id="@+id/textView20"
                         android:layout_gravity="center"
                         style="@style/TrainingSetHeaderLabel" />
@@ -293,7 +292,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="888"
+                        android:text="0/0:00"
                         android:id="@+id/tvCurrentSet2"
                         android:layout_gravity="center"
                         style="@style/TrainingSetComponentValue" />
@@ -308,7 +307,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="Set 3"
+                        android:text="@string/set_3"
                         android:id="@+id/textView21"
                         android:layout_gravity="center"
                         style="@style/TrainingSetHeaderLabel" />
@@ -317,7 +316,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="888"
+                        android:text="0/0:00"
                         android:id="@+id/tvCurrentSet3"
                         android:layout_gravity="center"
                         style="@style/TrainingSetComponentValue" />
@@ -332,7 +331,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="Set 4"
+                        android:text="@string/set_4"
                         android:id="@+id/textView22"
                         android:layout_gravity="center"
                         style="@style/TrainingSetHeaderLabel" />
@@ -341,7 +340,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="888"
+                        android:text="0/0:00"
                         android:id="@+id/tvCurrentSet4"
                         android:layout_gravity="center"
                         style="@style/TrainingSetComponentValue" />
@@ -350,7 +349,7 @@
                 <Button
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:text="Done Set"
+                    android:text="@string/done_set"
                     android:id="@+id/btnDoneCurrentSet" />
             </TableRow>
 
@@ -361,7 +360,7 @@
                 <Button
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:text="Complete Training"
+                    android:text="@string/complete_training"
                     android:id="@+id/btnCompleteTraining"
                     android:layout_span="5" />
             </TableRow>
@@ -379,7 +378,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="86dp"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="888"
+                android:text="000"
                 android:id="@+id/tvPushCounter"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center_vertical"
@@ -391,7 +390,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="88:88"
+                android:text="00:00:000"
                 android:id="@+id/tvTimer"
                 android:layout_gravity="center_horizontal"
                 android:textSize="40dp"

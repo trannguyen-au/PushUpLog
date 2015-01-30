@@ -41,7 +41,7 @@ public class AboutActivity extends ActionBarActivity
     @Override
     public void onClick(View view) {
         if(view == btnContact) {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("mailto:nguyennt86@gmail.com?subject=Push Up Diary Android App")));
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.contact_uri))));
         }
         else if(view == btnRemoveAds) {
             try {

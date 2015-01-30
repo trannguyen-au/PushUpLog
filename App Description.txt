@@ -1,0 +1,9 @@
+Version 1.0
+---------------
+Push Ups Diary is a tool to record your push ups and present your effort in an eye-catching chart. Unlike other Push Ups apps which are only counting your push up, this app has even more by also recording your push ups per minute. Push-ups per minute is also an effective measurement of your biceps power.
+Push Ups Diary provides you with 2 training modes:
+ + Training mode: this mode records your training session in a set of 4. You will have one minute for resting between each set.
+ + Free-style practice mode: this mode allows you to freely do as many push-ups as you want in one go.
+The summary page showing 2 types of chart: Push-ups count and the push-ups per minute chart, and can be viewed weekly, monthly or yearly.
+
+This version is ad-free for 3 days then you can have an option to upgrade to the ad-free version with even more features or stay with free version.
