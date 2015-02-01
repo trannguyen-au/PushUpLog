@@ -26,7 +26,7 @@ public class PracticeActivity extends ActionBarActivity {
         mViewModel = new PracticeViewModel(this);
 
         // start the introduction activity
-        if(!isSkipIntro() || true) {
+        if(!isSkipIntro()) {
             Intent intentIntro = new Intent(getApplicationContext(), IntroductionActivity.class);
             startActivityForResult(intentIntro,0);
         }

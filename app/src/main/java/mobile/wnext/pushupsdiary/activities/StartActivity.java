@@ -10,10 +10,8 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 
-import mobile.wnext.pushupsdiary.Constants;
 import mobile.wnext.pushupsdiary.PushUpsDiaryApplication;
 import mobile.wnext.pushupsdiary.R;
-import mobile.wnext.pushupsdiary.ViewServer;
 import mobile.wnext.pushupsdiary.viewmodels.StartViewModel;
 
 
@@ -71,16 +69,12 @@ public class StartActivity extends ActionBarActivity {
         startViewModel = new StartViewModel(this);
 
         loadAdRequest();
-        if(Constants.IS_DEBUG)
-            ViewServer.get(this).addWindow(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         startViewModel.refreshData();
-        if(Constants.IS_DEBUG)
-            ViewServer.get(this).setFocusedWindow(this);
 
         ((PushUpsDiaryApplication)getApplication()).checkIfTrialExpired();
     }
@@ -88,8 +82,6 @@ public class StartActivity extends ActionBarActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(Constants.IS_DEBUG)
-            ViewServer.get(this).removeWindow(this);
     }
 
 
