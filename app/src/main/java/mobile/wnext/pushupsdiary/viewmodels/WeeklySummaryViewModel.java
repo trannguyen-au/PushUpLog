@@ -94,7 +94,7 @@ public class WeeklySummaryViewModel implements View.OnClickListener {
         tmpCalendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
         firstDayOfWeek = tmpCalendar.getTime();
 
-        tmpCalendar.add(Calendar.DATE, 7);
+        tmpCalendar.add(Calendar.DATE, 6);
         lastDayOfWeek = tmpCalendar.getTime();
     }
 

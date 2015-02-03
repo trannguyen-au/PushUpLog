@@ -45,15 +45,6 @@ public class TrainingActivity extends ActionBarActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == 0) {
-            if(resultCode == RESULT_CANCELED) {
-                setSkipIntro(true);
-            }
-        }
-    }
-
-    @Override
     public void onResume(){
         viewModel.resume();
         super.onResume();

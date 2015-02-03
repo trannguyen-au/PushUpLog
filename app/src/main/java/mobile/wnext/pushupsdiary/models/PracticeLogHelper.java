@@ -120,7 +120,7 @@ public class PracticeLogHelper extends TableHelper {
                 ", sum("+PracticeLog.COL_COUNT_PUSH_UPS+") as totalCount" +
                 ", sum("+PracticeLog.COL_TOTAL_TIME+") as totalTime " +
                 " from "+PracticeLog.TABLE_NAME+" " +
-                " where "+PracticeLog.COL_LOG_DATE+" < Datetime('"+ sdf.format(to)+" 00:00:00') " +
+                " where "+PracticeLog.COL_LOG_DATE+" <= Datetime('"+ sdf.format(to)+" 23:59:59') " +
                 "   and "+PracticeLog.COL_LOG_DATE+" >= Datetime('"+sdf.format(from)+" 00:00:00') " +
                 " group by substr("+PracticeLog.COL_LOG_DATE+",0,11) " +
                 " order by "+PracticeLog.COL_LOG_DATE; // group up to date value

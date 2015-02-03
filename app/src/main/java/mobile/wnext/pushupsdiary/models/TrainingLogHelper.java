@@ -91,7 +91,7 @@ public class TrainingLogHelper extends TableHelper {
                 ", sum("+TrainingLog.COL_TOTAL_COUNT+") as totalCount" +
                 ", sum("+TrainingLog.COL_TOTAL_TIME+") as totalTime " +
                 " from "+TrainingLog.TABLE_NAME+" " +
-                " where "+TrainingLog.COL_DATE_TIME_START+" < Datetime('"+ sdf.format(to)+" 00:00:00') " +
+                " where "+TrainingLog.COL_DATE_TIME_START+" <= Datetime('"+ sdf.format(to)+" 23:59:59') " +
                 "   and "+TrainingLog.COL_DATE_TIME_START+" >= Datetime('"+sdf.format(from)+" 00:00:00') " +
                 " group by substr("+TrainingLog.COL_DATE_TIME_START+",0,11) " +
                 " order by "+TrainingLog.COL_DATE_TIME_START; // group up to date value

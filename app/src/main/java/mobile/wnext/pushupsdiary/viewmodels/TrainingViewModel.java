@@ -85,6 +85,7 @@ public class TrainingViewModel extends ViewModel
     int currentCount;
     long currentTime;
     int currentSetIndex;
+    int bestCountWholeSession;
 
     // model database
     TrainingLog mTrainingLog;
@@ -233,6 +234,8 @@ public class TrainingViewModel extends ViewModel
         try {
             TrainingLog bestLogRecord = application.getDbHelper().getTrainingLogHelper().findBestRecord();
             if(bestLogRecord!=null) {
+                bestCountWholeSession = bestLogRecord.getTotalCount();
+
                 // find all the sets
                 int count = 0;
                 for (TrainingSet data : bestLogRecord.getTrainingSets()) { // using foreign collection reference
@@ -269,11 +272,11 @@ public class TrainingViewModel extends ViewModel
         tvLRSet3.setText("0");
         tvLRSet4.setText("0");
         try {
-            TrainingLog bestLogRecord = application.getDbHelper().getTrainingLogHelper().findLastRecord();
-            if(bestLogRecord!=null) {
+            TrainingLog lastRecord = application.getDbHelper().getTrainingLogHelper().findLastRecord();
+            if(lastRecord!=null) {
                 // find all the sets
                 int count = 0;
-                for (TrainingSet data : bestLogRecord.getTrainingSets()) { // using foreign collection reference
+                for (TrainingSet data : lastRecord.getTrainingSets()) { // using foreign collection reference
                     switch (count) {
                         case 0:
                             tvLRSet1.setText(String.valueOf(data.getCount()));
@@ -294,6 +297,7 @@ public class TrainingViewModel extends ViewModel
         }
         catch (SQLException sqle) {
             Toast.makeText(activity, "Cannot access database for last record", Toast.LENGTH_SHORT).show();
+            Log.e(Constants.TAG, "Cannot access database for last record",sqle);
         }
     }
 
@@ -416,8 +420,7 @@ public class TrainingViewModel extends ViewModel
     }
 
     private boolean isBreakRecord() {
-        // TODO: Check if break record
-        return false;
+        return mTrainingLog!=null && mTrainingLog.getTotalCount()> bestCountWholeSession;
     }
 
     private void startResting() {
@@ -439,7 +442,10 @@ public class TrainingViewModel extends ViewModel
             }.start();
         }
         else {
-            Toast.makeText(activity,"Resting mode is already started",Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity,
+                    mResources.getString(R.string.resting_mode_is_already_started),
+                    Toast.LENGTH_SHORT)
+                .show();
         }
     }
 

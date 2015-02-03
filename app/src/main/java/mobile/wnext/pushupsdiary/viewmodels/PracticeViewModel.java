@@ -357,7 +357,7 @@ public class PracticeViewModel extends ViewModel implements View.OnClickListener
             public void dialogClosing() {
                 // save data to database
                 savePracticeLog();
-                congrateIfBreakRecord();
+                congratsIfBreakRecord();
             }
         });
         dialogFragment.show(activity.getFragmentManager(), CORRECT_COUNT_DIALOG_TAG);
@@ -365,13 +365,13 @@ public class PracticeViewModel extends ViewModel implements View.OnClickListener
 
     int totalDisplayingDialog = 0;
 
-    private void congrateIfBreakRecord() {
+    private void congratsIfBreakRecord() {
 
         boolean isBreakBestRecord =  false, isBreakLastRecord = false, isBreakSpeedLimit = false;
         if(mCurrentCount > bestCount) isBreakBestRecord = true;
         else if(mCurrentCount > lastCount) isBreakLastRecord = true;
 
-        int estimateSpeed = ((mCurrentCount * 60000) / (int)mCurrentTime);
+        int estimateSpeed = ((mCurrentCount * Constants.ONE_MINUTE) / (int)mCurrentTime);
         if(estimateSpeed > speedPerMinute) isBreakSpeedLimit = true;
 
         if(isBreakBestRecord || isBreakLastRecord || isBreakSpeedLimit) {
